@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="APPLICATION">
+        <menu>
+            <item android:title="Manage Lecturers" android:icon="@drawable/ic_baseline_supervised_user_circle_24"/>
+            <item android:title="Manage Students" android:icon="@drawable/ic_baseline_face_24" />
+            <item android:title="Manage Classes" android:icon="@drawable/ic_baseline_school_24" />
+            <item android:title="Manage Modules" android:icon="@drawable/ic_baseline_book_24" />
+            <item android:title="Manage Lectures" android:icon="@drawable/ic_baseline_menu_book_24" />
+            <item android:title="Manage Rooms" android:icon="@drawable/ic_baseline_meeting_room_24" />
+        </menu>
+    </item>
+    <item android:title="ACCOUNT">
+        <menu>
+            <item android:title="@string/settings" android:icon="@drawable/ic_baseline_settings_24"/>
+            <item android:title="@string/logout" android:icon="@drawable/ic_log_out" android:id="@+id/nav_logout"/>
+        </menu>
+    </item>
+</menu>

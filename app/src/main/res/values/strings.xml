@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Kronos</string>
+    <string name="open_nav_drawer">OPEN_NAV_BAR</string>
+    <string name="close_nav_drawer">CLOSE_NAV_BAR</string>
+    <string name="view_timetable">View Timetable</string>
+    <string name="my_modules">My Modules</string>
+    <string name="enroll_in_module">Enroll in Module</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+    <string name="app_description">Student timetable assistant</string>
+</resources>
