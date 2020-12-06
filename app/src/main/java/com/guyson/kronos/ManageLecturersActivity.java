@@ -26,6 +26,7 @@ import com.guyson.kronos.adapter.LecturerAdapter;
 import com.guyson.kronos.model.User;
 import com.guyson.kronos.service.RetrofitClientInstance;
 import com.guyson.kronos.service.UserClient;
+import com.guyson.kronos.util.AuthHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +48,6 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
 
     private List<User> lecturers;
 
-    private String token;
-    private SharedPreferences sharedPrefs;
-
     private UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
 
     @Override
@@ -58,7 +56,7 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
         setContentView(R.layout.activity_manage_lecturers);
 
         //Check if authorization token is valid
-        validateToken();
+        AuthHandler.validate(ManageLecturersActivity.this, "admin");
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -99,15 +97,8 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
 
             case R.id.nav_logout: {
                 //Logout button
+                AuthHandler.logout(ManageLecturersActivity.this);
 
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putString("auth_token", null);
-                editor.putString("role", null);
-                editor.apply();
-
-                Intent accountIntent = new Intent(ManageLecturersActivity.this, LoginActivity.class);
-                accountIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(accountIntent);
                 break;
             }
         }
@@ -177,27 +168,5 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void validateToken() {
-        sharedPrefs = ManageLecturersActivity.this.getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
-        token = sharedPrefs.getString("auth_token", null);
-
-        if(token!=null){
-            JWT jwt = new JWT(token);
-            boolean isExpired = jwt.isExpired(10);
-
-            //Check if JWT has expired
-            if(isExpired){
-                Intent intent = new Intent(ManageLecturersActivity.this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-
-        }else{
-            Intent intent = new Intent(ManageLecturersActivity.this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
     }
 }

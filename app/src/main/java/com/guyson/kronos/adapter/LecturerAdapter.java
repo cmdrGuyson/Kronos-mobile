@@ -1,6 +1,8 @@
 package com.guyson.kronos.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,16 +10,20 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.guyson.kronos.R;
 import com.guyson.kronos.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHolder> implements Filterable {
 
@@ -76,9 +82,17 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LecturerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull LecturerAdapter.ViewHolder holder, final int position) {
         holder.mName.setText(filteredLecturers.get(position).getFirstName() + " " + filteredLecturers.get(position).getLastName());
         holder.mUsername.setText(filteredLecturers.get(position).getUsername());
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                deleteLecturer(filteredLecturers.get(position).getUsername());
+                return false;
+            }
+        });
     }
 
     @Override
@@ -98,7 +112,7 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
                 } else {
                     List<User> filteredList = new ArrayList<>();
                     for (User user : lecturers) {
-                        if (user.getFirstName().toLowerCase().contains(charString.toLowerCase())) {
+                        if (user.getFirstName().toLowerCase().contains(charString.toLowerCase()) || user.getLastName().toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(user);
                         }
                     }
@@ -128,5 +142,30 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
             mUsername = itemView.findViewById(R.id.username);
 
         }
+    }
+
+    private void deleteLecturer(String username) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle("Delete lecturer");
+        builder.setMessage("Are you sure that you want delete "+username+" ?");
+
+        //When "Delete" button is clicked
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(context, "Deleted!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //When cancel button is clicked
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }

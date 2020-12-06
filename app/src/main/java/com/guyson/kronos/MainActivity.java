@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.auth0.android.jwt.JWT;
 import com.google.android.material.navigation.NavigationView;
+import com.guyson.kronos.util.AuthHandler;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         //Check if authorization token is valid
-        validateToken();
+        AuthHandler.validate(MainActivity.this, "student");
 
         //Setup toolbar
         mToolbar = findViewById(R.id.toolbar);
@@ -61,15 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_logout: {
                 //Logout button
-
-                SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putString("auth_token", null);
-                editor.putString("role", null);
-                editor.apply();
-
-                Intent accountIntent = new Intent(MainActivity.this, LoginActivity.class);
-                accountIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(accountIntent);
+                AuthHandler.logout(MainActivity.this);
                 break;
             }
         }
@@ -82,28 +75,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-
-    private void validateToken() {
-        sharedPrefs = MainActivity.this.getSharedPreferences("auth_preferences",Context.MODE_PRIVATE);
-        token = sharedPrefs.getString("auth_token", null);
-        String role = sharedPrefs.getString("role", null);
-
-        if(token!=null){
-            JWT jwt = new JWT(token);
-            boolean isExpired = jwt.isExpired(10);
-
-            //Check if JWT has expired or if user is not a student
-            if(isExpired || !role.equals("student")){
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-
-        }else{
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
     }
 }
