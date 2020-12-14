@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ManageClassesActivity"
+    tools:context=".ManageRoomsActivity"
     android:id="@+id/drawer_layout">
 
     <RelativeLayout
@@ -25,7 +25,7 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
-                    app:title="Manage Classes" />
+                    app:title="Manage Rooms" />
 
             </com.google.android.material.appbar.AppBarLayout>
 

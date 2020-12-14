@@ -20,13 +20,11 @@ import android.view.MenuItem;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.auth0.android.jwt.JWT;
 import com.google.android.material.navigation.NavigationView;
-import com.guyson.kronos.adapter.ClassAdapter;
-import com.guyson.kronos.model.Class;
-import com.guyson.kronos.model.User;
-import com.guyson.kronos.service.ClassClient;
+import com.guyson.kronos.adapter.RoomAdapter;
+import com.guyson.kronos.model.Room;;
 import com.guyson.kronos.service.RetrofitClientInstance;
+import com.guyson.kronos.service.RoomClient;
 import com.guyson.kronos.util.AuthHandler;
 import com.guyson.kronos.util.NavHandler;
 
@@ -37,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ManageClassesActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+public class ManageRoomsActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
@@ -45,20 +43,20 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
     private ProgressDialog mProgressDialog;
 
     private RecyclerView recyclerView;
-    private ClassAdapter classAdapter;
+    private RoomAdapter roomAdapter;
     private SearchView searchView;
 
-    private List<Class> classes;
+    private List<Room> rooms;
 
-    private ClassClient classClient = RetrofitClientInstance.getRetrofitInstance().create(ClassClient.class);
+    private RoomClient roomClient = RetrofitClientInstance.getRetrofitInstance().create(RoomClient.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_classes);
+        setContentView(R.layout.activity_manage_rooms);
 
         //Check if authorization token is valid
-        AuthHandler.validate(ManageClassesActivity.this, "admin");
+        AuthHandler.validate(ManageRoomsActivity.this, "admin");
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -82,21 +80,21 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
         mActionBarDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        //Setup classes list
-        classes = new ArrayList<>();
+        //Setup rooms list
+        rooms = new ArrayList<>();
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        classAdapter = new ClassAdapter(this, classes);
-        recyclerView.setAdapter(classAdapter);
+        roomAdapter = new RoomAdapter(this, rooms);
+        recyclerView.setAdapter(roomAdapter);
 
-        getAllClasses();
+        getAllRooms();
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Handle side drawer navigation
-        NavHandler.handleAdminNav(item, ManageClassesActivity.this);
+        NavHandler.handleAdminNav(item, ManageRoomsActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -108,24 +106,24 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
 
     }
 
-    private void getAllClasses() {
-        Call<List<Class>> call = classClient.getClasses();
+    private void getAllRooms() {
+        Call<List<Room>> call = roomClient.getRooms();
 
         //Show progress
-        mProgressDialog.setMessage("Loading classes...");
+        mProgressDialog.setMessage("Loading rooms...");
         mProgressDialog.show();
 
-        call.enqueue(new Callback<List<Class>>() {
+        call.enqueue(new Callback<List<Room>>() {
             @Override
-            public void onResponse(Call<List<Class>> call, Response<List<Class>> response) {
-                classes = response.body();
-                classAdapter.setClasses(classes);
+            public void onResponse(Call<List<Room>> call, Response<List<Room>> response) {
+                rooms = response.body();
+                roomAdapter.setRooms(rooms);
                 mProgressDialog.dismiss();
             }
 
             @Override
-            public void onFailure(Call<List<Class>> call, Throwable t) {
-                Toast.makeText(ManageClassesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<List<Room>> call, Throwable t) {
+                Toast.makeText(ManageRoomsActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 mProgressDialog.dismiss();
             }
         });
@@ -143,13 +141,13 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                classAdapter.getFilter().filter(query);
+                roomAdapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
-                classAdapter.getFilter().filter(query);
+                roomAdapter.getFilter().filter(query);
                 return false;
             }
         });

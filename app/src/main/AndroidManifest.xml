@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="${usesCleartextTraffic}">
-        <activity android:name=".ManageClassesActivity"></activity>
+        <activity android:name=".ManageRoomsActivity"></activity>
+        <activity android:name=".ManageClassesActivity" />
         <activity android:name=".ManageLecturersActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">

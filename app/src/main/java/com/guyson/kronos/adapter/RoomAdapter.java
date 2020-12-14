@@ -3,7 +3,6 @@ package com.guyson.kronos.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,77 +18,76 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.guyson.kronos.R;
-import com.guyson.kronos.model.Class;
+import com.guyson.kronos.model.Room;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ViewHolder> implements Filterable {
-
+public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> implements Filterable {
     private Context context;
-    private List<Class> classes;
-    private List<Class> filteredClasses;
+    private List<Room> rooms;
+    private List<Room> filteredRooms;
 
-    public ClassAdapter(Context context, List<Class> classes) {
+    public RoomAdapter(Context context, List<Room> rooms) {
         this.context = context;
-        this.classes = classes;
+        this.rooms = rooms;
     }
 
-    public void setClasses(final List<Class> classes){
-        if(this.classes == null){
-            this.classes = classes;
-            this.filteredClasses = classes;
-            notifyItemChanged(0, filteredClasses.size());
+    public void setRooms(final List<Room> rooms){
+        if(this.rooms == null){
+            this.rooms = rooms;
+            this.filteredRooms = rooms;
+            notifyItemChanged(0, filteredRooms.size());
         } else {
             final DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {
-                    return ClassAdapter.this.classes.size();
+                    return RoomAdapter.this.rooms.size();
                 }
 
                 @Override
                 public int getNewListSize() {
-                    return classes.size();
+                    return rooms.size();
                 }
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return ClassAdapter.this.classes.get(oldItemPosition).getClassID() == classes.get(newItemPosition).getClassID();
+                    return RoomAdapter.this.rooms.get(oldItemPosition).getRoomID() == rooms.get(newItemPosition).getRoomID();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
 
-                    Class newClass = ClassAdapter.this.classes.get(oldItemPosition);
+                    Room newRoom = RoomAdapter.this.rooms.get(oldItemPosition);
 
-                    Class oldClass = classes.get(newItemPosition);
+                    Room oldRoom = rooms.get(newItemPosition);
 
-                    return newClass.getClassID() == oldClass.getClassID() ;
+                    return newRoom.getRoomID() == oldRoom.getRoomID() ;
                 }
             });
-            this.classes = classes;
-            this.filteredClasses = classes;
+            this.rooms = rooms;
+            this.filteredRooms = rooms;
             result.dispatchUpdatesTo(this);
         }
     }
 
     @NonNull
     @Override
-    public ClassAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.class_row, parent,false);
-        return new ViewHolder(view);
+    public RoomAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.room_row, parent,false);
+        return new RoomAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ClassAdapter.ViewHolder holder, final int position) {
-        holder.mClassID.setText(String.valueOf(filteredClasses.get(position).getClassID()));
-        holder.mDescription.setText(filteredClasses.get(position).getDescription());
-        holder.mType.setText(filteredClasses.get(position).getType());
+    public void onBindViewHolder(@NonNull RoomAdapter.ViewHolder holder, final int position) {
+        holder.mRoomID.setText(String.valueOf(filteredRooms.get(position).getRoomID()));
+        holder.mDescription.setText(filteredRooms.get(position).getDescription());
+        holder.mType.setText(filteredRooms.get(position).getType());
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                deleteClass(filteredClasses.get(position).getClassID());
+                deleteRoom(filteredRooms.get(position).getRoomID());
                 return false;
             }
         });
@@ -97,7 +95,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if(filteredClasses != null ) return filteredClasses.size();
+        if(filteredRooms != null ) return filteredRooms.size();
         return 0;
     }
 
@@ -108,48 +106,48 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ViewHolder> 
             protected FilterResults performFiltering(CharSequence charSequence) {
                 String charString = charSequence.toString();
                 if (charString.isEmpty()) {
-                    filteredClasses = classes;
+                    filteredRooms = rooms;
                 } else {
-                    List<Class> filteredList = new ArrayList<>();
-                    for (Class _class : classes) {
+                    List<Room> filteredList = new ArrayList<>();
+                    for (Room room : rooms) {
                         //Search through ID and type
-                        if (String.valueOf(_class.getClassID()).contains(charString.toLowerCase()) || _class.getType().toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(_class);
+                        if (String.valueOf(room.getRoomID()).contains(charString.toLowerCase()) || room.getType().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(room);
                         }
                     }
-                    filteredClasses = filteredList;
+                    filteredRooms = filteredList;
                 }
 
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = filteredClasses;
+                filterResults.values = filteredRooms;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filteredClasses = (ArrayList<Class>) filterResults.values;
+                filteredRooms = (ArrayList<Room>) filterResults.values;
                 notifyDataSetChanged();
             }
         };
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mClassID, mType, mDescription;
+        TextView mRoomID, mType, mDescription;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            mClassID = itemView.findViewById(R.id.class_id);
+            mRoomID = itemView.findViewById(R.id.room_id);
             mType = itemView.findViewById(R.id.type);
             mDescription = itemView.findViewById(R.id.description);
 
         }
     }
 
-    private void deleteClass(int classID) {
+    private void deleteRoom(int roomID) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle("Delete class");
-        builder.setMessage("Are you sure that you want delete "+classID+" ?");
+        builder.setTitle("Delete room");
+        builder.setMessage("Are you sure that you want delete "+roomID+" ?");
 
         //When "Delete" button is clicked
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {

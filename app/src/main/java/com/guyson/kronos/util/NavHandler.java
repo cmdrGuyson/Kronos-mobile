@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.guyson.kronos.ManageClassesActivity;
 import com.guyson.kronos.ManageLecturersActivity;
+import com.guyson.kronos.ManageRoomsActivity;
 import com.guyson.kronos.R;
 
 public class NavHandler {
@@ -19,17 +20,27 @@ public class NavHandler {
                 break;
             }
             case R.id.nav_manage_classes: {
-                //Manage Lecturers button
+                //Manage Classes button
                 Intent intent = new Intent(context, ManageClassesActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
+                break;
             }
             case R.id.nav_manage_lecturers: {
                 //Manage Lecturers button
                 Intent intent = new Intent(context, ManageLecturersActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
+                break;
             }
+            case R.id.nav_manage_rooms: {
+                //Manage Lecturers button
+                Intent intent = new Intent(context, ManageRoomsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+                break;
+            }
+
         }
     }
 
