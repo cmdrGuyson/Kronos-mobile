@@ -22,6 +22,11 @@ public class AuthHandler {
 
             //Check if JWT has expired
             if(isExpired || !role.equals(userRole)){
+
+                if(isExpired) {
+                    AuthHandler.logout(context);
+                }
+
                 Intent intent = new Intent(context, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);

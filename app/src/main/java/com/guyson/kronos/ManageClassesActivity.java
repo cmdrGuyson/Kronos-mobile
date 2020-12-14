@@ -22,10 +22,11 @@ import android.widget.Toast;
 
 import com.auth0.android.jwt.JWT;
 import com.google.android.material.navigation.NavigationView;
-import com.guyson.kronos.adapter.LecturerAdapter;
+import com.guyson.kronos.adapter.ClassAdapter;
+import com.guyson.kronos.model.Class;
 import com.guyson.kronos.model.User;
+import com.guyson.kronos.service.ClassClient;
 import com.guyson.kronos.service.RetrofitClientInstance;
-import com.guyson.kronos.service.UserClient;
 import com.guyson.kronos.util.AuthHandler;
 import com.guyson.kronos.util.NavHandler;
 
@@ -36,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ManageLecturersActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+public class ManageClassesActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
@@ -44,12 +45,12 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
     private ProgressDialog mProgressDialog;
 
     private RecyclerView recyclerView;
-    private LecturerAdapter lecturerAdapter;
+    private ClassAdapter classAdapter;
     private SearchView searchView;
 
-    private List<User> lecturers;
+    private List<Class> classes;
 
-    private UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+    private ClassClient classClient = RetrofitClientInstance.getRetrofitInstance().create(ClassClient.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
         setContentView(R.layout.activity_manage_lecturers);
 
         //Check if authorization token is valid
-        AuthHandler.validate(ManageLecturersActivity.this, "admin");
+        AuthHandler.validate(ManageClassesActivity.this, "admin");
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -82,21 +83,20 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
         mNavigationView.setNavigationItemSelectedListener(this);
 
         //Setup lecturers list
-        lecturers = new ArrayList<>();
+        classes = new ArrayList<>();
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        lecturerAdapter = new LecturerAdapter(this, lecturers);
-        recyclerView.setAdapter(lecturerAdapter);
+        classAdapter = new ClassAdapter(this, classes);
+        recyclerView.setAdapter(classAdapter);
 
-        getAllLecturers();
+        getAllClasses();
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         //Handle side drawer navigation
-        NavHandler.handleAdminNav(item, ManageLecturersActivity.this);
+        NavHandler.handleAdminNav(item, ManageClassesActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -108,24 +108,24 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
 
     }
 
-    private void getAllLecturers() {
-        Call<List<User>> call = userClient.getLecturers();
+    private void getAllClasses() {
+        Call<List<Class>> call = classClient.getClasses();
 
         //Show progress
-        mProgressDialog.setMessage("Loading lecturers...");
+        mProgressDialog.setMessage("Loading classes...");
         mProgressDialog.show();
 
-        call.enqueue(new Callback<List<User>>() {
+        call.enqueue(new Callback<List<Class>>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                lecturers = response.body();
-                lecturerAdapter.setLecturers(lecturers);
+            public void onResponse(Call<List<Class>> call, Response<List<Class>> response) {
+                classes = response.body();
+                classAdapter.setClasses(classes);
                 mProgressDialog.dismiss();
             }
 
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                Toast.makeText(ManageLecturersActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<List<Class>> call, Throwable t) {
+                Toast.makeText(ManageClassesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 mProgressDialog.dismiss();
             }
         });
@@ -143,13 +143,13 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                lecturerAdapter.getFilter().filter(query);
+                classAdapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
-                lecturerAdapter.getFilter().filter(query);
+                classAdapter.getFilter().filter(query);
                 return false;
             }
         });
