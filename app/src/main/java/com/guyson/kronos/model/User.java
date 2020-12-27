@@ -2,7 +2,8 @@ package com.guyson.kronos.model;
 
 public class User {
 
-    private String username, firstName, lastName, password, role, classID, token;
+    private String username, firstName, lastName, password, role, token;
+    private int classID;
 
     public String getLastName() {
         return lastName;
@@ -44,11 +45,11 @@ public class User {
         this.role = role;
     }
 
-    public String getClassID() {
+    public int getClassID() {
         return classID;
     }
 
-    public void setClassID(String classID) {
+    public void setClassID(int classID) {
         this.classID = classID;
     }
 
@@ -60,7 +61,7 @@ public class User {
         this.token = token;
     }
 
-    public User(String username, String firstName, String lastName, String password, String role, String classID, String token) {
+    public User(String username, String firstName, String lastName, String password, String role, int classID, String token) {
         this.username = username;
         this.firstName = firstName;
         this.password = password;

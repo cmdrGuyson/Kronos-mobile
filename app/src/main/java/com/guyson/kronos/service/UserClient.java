@@ -24,4 +24,8 @@ public interface UserClient {
     //Get all lecturers
     @GET("lecturers")
     Call<List<User>> getLecturers();
+
+    //Get all students
+    @GET("students")
+    Call<List<User>> getStudents();
 }

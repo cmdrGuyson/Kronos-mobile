@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:paddingLeft="15dp"
-            android:src="@drawable/ic_baseline_supervised_user_circle_24"
+            android:src="@drawable/ic_baseline_face_24"
             app:tint="@color/colorIcon"></ImageView>
 
         <RelativeLayout
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:padding="5dp"
-                android:text="Username"
+                android:text="Student ID"
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
@@ -71,18 +71,27 @@
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
 
-            <!--        <Button-->
-            <!--            android:id="@+id/textButton"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:text="Delete"-->
-            <!--            android:layout_marginTop="5dp"-->
-            <!--            android:layout_marginRight="30dp"-->
-            <!--            android:layout_below="@+id/name"-->
-            <!--            android:layout_alignParentRight="true"-->
-            <!--            app:icon="@drawable/ic_baseline_delete_outline_24"-->
-            <!--            style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-            <!--            />-->
+            <TextView
+                android:id="@+id/_class"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/_name"
+                android:layout_marginLeft="15dp"
+                android:padding="5dp"
+                android:text="Class"
+                android:textColor="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/class_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/name"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:gravity="right"
+                android:padding="5dp"
+                android:text="CL001"
+                android:textColor="@android:color/black"/>
 
 
         </RelativeLayout>
