@@ -3,6 +3,7 @@ package com.guyson.kronos.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,78 +19,79 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.guyson.kronos.R;
-import com.guyson.kronos.model.Module;
+import com.guyson.kronos.model.Lecture;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder> implements Filterable {
+public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHolder> implements Filterable {
 
     private Context context;
-    private List<Module> modules;
-    private List<Module> filteredModules;
+    private List<Lecture> lectures;
+    private List<Lecture> filteredLectures;
 
-    public ModuleAdapter(Context context, List<Module> modules) {
+    public LectureAdapter(Context context, List<Lecture> lectures) {
         this.context = context;
-        this.modules = modules;
+        this.lectures = lectures;
     }
 
-    public void setModules(final List<Module> modules){
-        if(this.modules == null){
-            this.modules = modules;
-            this.filteredModules = modules;
-            notifyItemChanged(0, filteredModules.size());
+    public void setLectures(final List<Lecture> lectures){
+        if(this.lectures == null){
+            this.lectures = lectures;
+            this.filteredLectures = lectures;
+            notifyItemChanged(0, filteredLectures.size());
         } else {
             final DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {
-                    return ModuleAdapter.this.modules.size();
+                    return LectureAdapter.this.lectures.size();
                 }
 
                 @Override
                 public int getNewListSize() {
-                    return modules.size();
+                    return lectures.size();
                 }
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return ModuleAdapter.this.modules.get(oldItemPosition).getModuleID() == modules.get(newItemPosition).getModuleID();
+                    return LectureAdapter.this.lectures.get(oldItemPosition).getLectureID() == lectures.get(newItemPosition).getLectureID();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
 
-                    Module newModule = ModuleAdapter.this.modules.get(oldItemPosition);
+                    Lecture newLecture = LectureAdapter.this.lectures.get(oldItemPosition);
 
-                    Module oldModule = modules.get(newItemPosition);
+                    Lecture oldLecture = lectures.get(newItemPosition);
 
-                    return newModule.getModuleID() == oldModule.getModuleID() ;
+                    return newLecture.getLectureID() == oldLecture.getLectureID() ;
                 }
             });
-            this.modules = modules;
-            this.filteredModules = modules;
+            this.lectures = lectures;
+            this.filteredLectures = lectures;
             result.dispatchUpdatesTo(this);
         }
     }
 
     @NonNull
     @Override
-    public ModuleAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.module_row, parent,false);
-        return new ModuleAdapter.ViewHolder(view);
+    public LectureAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.lecture_row, parent,false);
+        return new LectureAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ModuleAdapter.ViewHolder holder, final int position) {
-        holder.mNameID.setText("["+filteredModules.get(position).getModuleID() + "] " + filteredModules.get(position).getName());
-        holder.mDescription.setText((filteredModules.get(position)).getDescription());
-        holder.mCredits.setText("CREDITS " + filteredModules.get(position).getCredits());
-        holder.mLecturer.setText(filteredModules.get(position).getLecturer().getFirstName() +" "+ filteredModules.get(position).getLecturer().getLastName());
+    public void onBindViewHolder(@NonNull LectureAdapter.ViewHolder holder, final int position) {
+
+        holder.mModule.setText(filteredLectures.get(position).getModule().getName());
+        holder.mRoom.setText(String.valueOf(filteredLectures.get(position).getRoom().getRoomID()));
+        holder.mTime.setText(filteredLectures.get(position).getStartTime() + " (" + filteredLectures.get(position).getDuration() + " hours)");
+        holder.mLecturer.setText(filteredLectures.get(position).getModule().getLecturer().getFirstName() +" "+ filteredLectures.get(position).getModule().getLecturer().getLastName());
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                deleteModule(filteredModules.get(position).getModuleID());
+                deleteLecture(filteredLectures.get(position).getLectureID());
                 return false;
             }
         });
@@ -97,7 +99,7 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if(filteredModules != null ) return filteredModules.size();
+        if(filteredLectures != null ) return filteredLectures.size();
         return 0;
     }
 
@@ -108,50 +110,50 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
             protected FilterResults performFiltering(CharSequence charSequence) {
                 String charString = charSequence.toString();
                 if (charString.isEmpty()) {
-                    filteredModules = modules;
+                    filteredLectures = lectures;
                 } else {
-                    List<Module> filteredList = new ArrayList<>();
-                    for (Module module : modules) {
+                    List<Lecture> filteredList = new ArrayList<>();
+                    for (Lecture lecture : lectures) {
                         String searchKey = charString.toLowerCase();
-                        if (module.getName().toLowerCase().contains(searchKey) || String.valueOf(module.getModuleID()).contains(searchKey) || module.getLecturer().getFirstName().toLowerCase().contains(searchKey) ||  module.getLecturer().getLastName().toLowerCase().contains(searchKey)) {
-                            filteredList.add(module);
+                        if (String.valueOf(lecture.getLectureID()).toLowerCase().equals(searchKey) || lecture.getModule().getLecturer().getLastName().toLowerCase().equals(searchKey) || lecture.getModule().getLecturer().getFirstName().toLowerCase().equals(searchKey)) {
+                            filteredList.add(lecture);
                         }
                     }
-                    filteredModules = filteredList;
+                    filteredLectures = filteredList;
                 }
 
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = filteredModules;
+                filterResults.values = filteredLectures;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filteredModules = (ArrayList<Module>) filterResults.values;
+                filteredLectures = (ArrayList<Lecture>) filterResults.values;
                 notifyDataSetChanged();
             }
         };
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mNameID, mLecturer, mCredits, mDescription;
+        TextView mModule, mTime, mRoom, mLecturer;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            mNameID = itemView.findViewById(R.id.name_id);
+            mModule = itemView.findViewById(R.id.module);
             mLecturer = itemView.findViewById(R.id.lecturer);
-            mCredits = itemView.findViewById(R.id.credits);
-            mDescription = itemView.findViewById(R.id.description);
+            mTime = itemView.findViewById(R.id.time);
+            mRoom = itemView.findViewById(R.id.room);
 
 
         }
     }
 
-    private void deleteModule(int moduleID) {
+    private void deleteLecture(int lectureID) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle("Delete module");
-        builder.setMessage("Are you sure that you want delete "+moduleID+" ?");
+        builder.setTitle("Delete Lecture");
+        builder.setMessage("Are you sure that you want lecture "+lectureID+" ?");
 
         //When "Delete" button is clicked
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {

@@ -22,22 +22,28 @@
                 <com.google.android.material.appbar.MaterialToolbar
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
-                    android:id="@+id/toolbar"/>
+                    android:id="@+id/toolbar"
+                    app:title="Timetable"/>
             </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <CalendarView
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:id="@+id/calendar_view"
             android:layout_below="@id/coordinator_layout"
             android:layout_centerHorizontal="true"
             />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_below="@id/calendar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
-
-
-
-
-
 
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
