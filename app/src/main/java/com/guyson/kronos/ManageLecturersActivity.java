@@ -119,8 +119,10 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 lecturers = response.body();
-                lecturerAdapter.setLecturers(lecturers);
-                mProgressDialog.dismiss();
+                if(lecturers != null) {
+                    lecturerAdapter.setLecturers(lecturers);
+                    mProgressDialog.dismiss();
+                }
             }
 
             @Override

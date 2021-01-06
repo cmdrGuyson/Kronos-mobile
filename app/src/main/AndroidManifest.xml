@@ -3,6 +3,7 @@
     package="com.guyson.kronos">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="${usesCleartextTraffic}">
-        <activity android:name=".ManageModulesActivity"></activity>
+        <activity android:name=".ViewModulesActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".ManageModulesActivity" />
         <activity android:name=".ManageStudentsActivity" />
         <activity android:name=".ManageRoomsActivity" />
         <activity android:name=".ManageClassesActivity" />

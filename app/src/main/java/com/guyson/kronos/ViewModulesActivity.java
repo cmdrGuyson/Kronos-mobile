@@ -37,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ManageModulesActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+public class ViewModulesActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
@@ -55,10 +55,10 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_modules);
+        setContentView(R.layout.activity_view_modules);
 
         //Check if authorization token is valid
-        AuthHandler.validate(ManageModulesActivity.this, "admin");
+        AuthHandler.validate(ViewModulesActivity.this, "student");
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -87,7 +87,7 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        moduleAdapter = new ModuleAdapter(this, modules, "admin");
+        moduleAdapter = new ModuleAdapter(this, modules, "student");
         recyclerView.setAdapter(moduleAdapter);
 
         getAllLecturers();
@@ -97,7 +97,7 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         //Handle side drawer navigation
-        NavHandler.handleStudentNav(item, ManageModulesActivity.this);
+        NavHandler.handleStudentNav(item, ViewModulesActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -126,7 +126,7 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
 
             @Override
             public void onFailure(Call<List<Module>> call, Throwable t) {
-                Toast.makeText(ManageModulesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewModulesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 mProgressDialog.dismiss();
             }
         });
@@ -134,7 +134,7 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.options_menu, menu);
+        getMenuInflater().inflate(R.menu.search_options_menu, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();

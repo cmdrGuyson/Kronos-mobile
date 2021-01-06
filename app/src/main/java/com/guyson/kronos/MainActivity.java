@@ -27,6 +27,7 @@ import com.guyson.kronos.service.RetrofitClientInstance;
 import com.guyson.kronos.util.AuthHandler;
 import com.guyson.kronos.util.EventDecorator;
 import com.guyson.kronos.util.ExtraUtilities;
+import com.guyson.kronos.util.NavHandler;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LectureAdapter lectureAdapter;
 
     private List<Lecture> lectures;
+    private boolean resultsRetrieved;
 
     private LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
 
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getAllLectures();
 
         //Setup lectures list
+        resultsRetrieved = false;
         lectures = new ArrayList<>();
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -119,8 +122,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<List<Lecture>> call, Response<List<Lecture>> response) {
                 lectures = response.body();
-                setupTimetable();
-                mProgressDialog.dismiss();
+                if (lectures != null) {
+                    resultsRetrieved = true;
+                    setupTimetable();
+                    mProgressDialog.dismiss();
+                }
             }
 
             @Override
@@ -133,7 +139,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupTimetable() {
-        materialCalendarView.addDecorators(new EventDecorator(Color.RED, ExtraUtilities.getCalendarDays(lectures)));
+        if(resultsRetrieved) {
+            materialCalendarView.addDecorators(new EventDecorator(Color.RED, ExtraUtilities.getCalendarDays(lectures)));
+        }
     }
 
     private void dateChangeHandler(CalendarDay date) {
@@ -148,11 +156,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<List<Lecture>> call, Response<List<Lecture>> response) {
                 lectures = response.body();
-                if(lectures.size() == 0) {
-                    Toast.makeText(MainActivity.this, "No lectures for this day", Toast.LENGTH_SHORT).show();
+                if(lectures != null) {
+                    if(lectures.size() == 0) {
+                        Toast.makeText(MainActivity.this, "No lectures for this day", Toast.LENGTH_SHORT).show();
+                    }
+                    lectureAdapter.setLectures(lectures);
+                    mProgressDialog.dismiss();
                 }
-                lectureAdapter.setLectures(lectures);
-                mProgressDialog.dismiss();
+
             }
 
             @Override
@@ -169,15 +180,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-
-
-            case R.id.nav_logout: {
-                //Logout button
-                AuthHandler.logout(MainActivity.this);
-                break;
-            }
-        }
+        //Handle side drawer navigation
+        NavHandler.handleStudentNav(item, MainActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -187,5 +191,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Check if authorization token is valid
+        AuthHandler.validate(MainActivity.this, "student");
     }
 }

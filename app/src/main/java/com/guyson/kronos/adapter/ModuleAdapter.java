@@ -13,9 +13,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.guyson.kronos.R;
 import com.guyson.kronos.model.Module;
@@ -28,10 +30,12 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
     private Context context;
     private List<Module> modules;
     private List<Module> filteredModules;
+    private String role;
 
-    public ModuleAdapter(Context context, List<Module> modules) {
+    public ModuleAdapter(Context context, List<Module> modules, String role) {
         this.context = context;
         this.modules = modules;
+        this.role = role;
     }
 
     public void setModules(final List<Module> modules){
@@ -75,7 +79,15 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
     @NonNull
     @Override
     public ModuleAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.module_row, parent,false);
+        View view;
+        //If admin is viewing modules
+        if(role.equals("admin")) {
+            view = LayoutInflater.from(context).inflate(R.layout.module_row, parent,false);
+        }
+        //If student is viewing modules
+        else{
+            view = LayoutInflater.from(context).inflate(R.layout.student_module_row, parent,false);
+        };
         return new ModuleAdapter.ViewHolder(view);
     }
 
@@ -93,6 +105,31 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
                 return false;
             }
         });
+
+        if(role.equals("student")) {
+
+            boolean isEnrolled = filteredModules.get(position).isEnrolled();
+
+            //If student is enrolled in the module
+            if (isEnrolled) {
+                holder.mEnrollButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(context, "Enrolled!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else{
+                holder.mEnrollButton.setText("REMOVE");
+                holder.mEnrollButton.setBackgroundTintList(context.getResources().getColorStateList(R.color.buttonRed));
+                holder.mEnrollButton.setIcon(context.getResources().getDrawable(R.drawable.ic_baseline_indeterminate_check_box_24));
+                holder.mEnrollButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(context, "Un-enrolled!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
     }
 
     @Override
@@ -135,6 +172,7 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mNameID, mLecturer, mCredits, mDescription;
+        MaterialButton mEnrollButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -143,6 +181,10 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
             mLecturer = itemView.findViewById(R.id.lecturer);
             mCredits = itemView.findViewById(R.id.credits);
             mDescription = itemView.findViewById(R.id.description);
+
+            if(role.equals("student")){
+                mEnrollButton = itemView.findViewById(R.id.enroll_button);
+            }
 
 
         }

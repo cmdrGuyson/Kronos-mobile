@@ -1,14 +1,21 @@
 package com.guyson.kronos;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -27,10 +34,13 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText mUsernameEditText, mPasswordEditText;
     private MaterialButton mLoginButton;
     private ProgressDialog mProgressDialog;
+    private TextView mContactTextView;
 
     private SharedPreferences sharedPrefs;
 
     private UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+
+    private int CALL_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 loginUser();
+            }
+        });
+
+        //Handle contact admin
+        mContactTextView = findViewById(R.id.tv_contact_admin);
+        mContactTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeCall();
             }
         });
     }
@@ -102,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         homePageIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(homePageIntent);
+                        finish();
                     }
                     // Invalid username
                     else if(response.code() == 404){
@@ -141,5 +161,37 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+    // super.onBackPressed();
+    // Not calling **super**, disables back button in current screen.
+    }
+
+    //Handle Contact Administrator
+    private void makeCall() {
+        String number = "0999217356";
+
+        if(ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.CALL_PHONE}, CALL_REQUEST);
+        }else{
+            String dial = "tel:"+number;
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == CALL_REQUEST){
+            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                makeCall();
+            }else{
+                Toast.makeText(this, "You need to give permissions to make a call", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }

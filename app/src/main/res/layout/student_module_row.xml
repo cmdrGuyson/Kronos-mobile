@@ -57,9 +57,10 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:layout_marginLeft="5dp"
+                android:layout_weight="20"
+                android:paddingBottom="5dp"
                 android:paddingLeft="25dp"
+                android:layout_marginLeft="5dp"
                 android:src="@drawable/ic_baseline_supervised_user_circle_24"
                 app:tint="@color/colorIcon"/>
 
@@ -74,12 +75,23 @@
 
             <TextView
                 android:id="@+id/lecturer"
-                android:layout_width="180dp"
+                android:layout_width="128dp"
+                android:paddingTop="5dp"
                 android:layout_height="wrap_content"
                 android:text="Gayanga Kuruppu"
-                android:paddingTop="5dp"
                 android:textColor="@android:color/black"
                 android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/enroll_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enroll"
+                android:layout_marginTop="5dp"
+                app:icon="@drawable/ic_baseline_add_box_24"
+                android:layout_alignParentRight="true"
+                android:textSize="12sp"
+                />
 
         </LinearLayout>
 

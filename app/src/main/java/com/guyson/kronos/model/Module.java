@@ -4,13 +4,15 @@ public class Module {
     private int moduleID, credits;
     private String name, description;
     private User lecturer;
+    private boolean isEnrolled;
 
-    public Module(int moduleID, int credits, String name, String description, User lecturer) {
+    public Module(int moduleID, int credits, String name, String description, User lecturer, boolean isEnrolled) {
         this.moduleID = moduleID;
         this.credits = credits;
         this.name = name;
         this.description = description;
         this.lecturer = lecturer;
+        this.isEnrolled = isEnrolled;
     }
 
     public int getModuleID() {
@@ -51,5 +53,13 @@ public class Module {
 
     public void setLecturer(User lecturer) {
         this.lecturer = lecturer;
+    }
+
+    public boolean isEnrolled() {
+        return isEnrolled;
+    }
+
+    public void setEnrolled(boolean enrolled) {
+        isEnrolled = enrolled;
     }
 }
