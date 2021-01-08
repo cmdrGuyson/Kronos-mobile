@@ -97,7 +97,7 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         //Handle side drawer navigation
-        NavHandler.handleStudentNav(item, ManageModulesActivity.this);
+        NavHandler.handleAdminNav(item, ManageModulesActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);

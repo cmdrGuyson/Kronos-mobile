@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,10 +30,12 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     private Context context;
     private List<Lecture> lectures;
     private List<Lecture> filteredLectures;
+    private String role;
 
-    public LectureAdapter(Context context, List<Lecture> lectures) {
+    public LectureAdapter(Context context, List<Lecture> lectures, String role) {
         this.context = context;
         this.lectures = lectures;
+        this.role = role;
     }
 
     public void setLectures(final List<Lecture> lectures){
@@ -81,20 +84,22 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LectureAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final LectureAdapter.ViewHolder holder, final int position) {
 
         holder.mModule.setText(filteredLectures.get(position).getModule().getName());
         holder.mRoom.setText(String.valueOf(filteredLectures.get(position).getRoom().getRoomID()));
-        holder.mTime.setText(filteredLectures.get(position).getStartTime() + " (" + filteredLectures.get(position).getDuration() + " hours)");
-        holder.mLecturer.setText(filteredLectures.get(position).getModule().getLecturer().getFirstName() +" "+ filteredLectures.get(position).getModule().getLecturer().getLastName());
+        holder.mTime.setText(String.format("%s (%s hours)", filteredLectures.get(position).getStartTime(), filteredLectures.get(position).getDuration()));
+        holder.mLecturer.setText(String.format("%s %s", filteredLectures.get(position).getModule().getLecturer().getFirstName(), filteredLectures.get(position).getModule().getLecturer().getLastName()));
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                deleteLecture(filteredLectures.get(position).getLectureID());
-                return false;
-            }
-        });
+        if(role.equals("admin")) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    deleteLecture(filteredLectures.get(position).getLectureID());
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -115,7 +120,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
                     List<Lecture> filteredList = new ArrayList<>();
                     for (Lecture lecture : lectures) {
                         String searchKey = charString.toLowerCase();
-                        if (String.valueOf(lecture.getLectureID()).toLowerCase().equals(searchKey) || lecture.getModule().getLecturer().getLastName().toLowerCase().equals(searchKey) || lecture.getModule().getLecturer().getFirstName().toLowerCase().equals(searchKey)) {
+                        if (String.valueOf(lecture.getLectureID()).toLowerCase().contains(searchKey) || lecture.getModule().getLecturer().getLastName().toLowerCase().contains(searchKey) || lecture.getModule().getLecturer().getFirstName().toLowerCase().contains(searchKey)) {
                             filteredList.add(lecture);
                         }
                     }
@@ -137,6 +142,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mModule, mTime, mRoom, mLecturer;
+        CardView mCardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -145,7 +151,6 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             mLecturer = itemView.findViewById(R.id.lecturer);
             mTime = itemView.findViewById(R.id.time);
             mRoom = itemView.findViewById(R.id.room);
-
 
         }
     }

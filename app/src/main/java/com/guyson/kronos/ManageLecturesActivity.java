@@ -11,11 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -39,7 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ManageLecturesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private RecyclerView recyclerView;
     private LectureAdapter lectureAdapter;
+    private SearchView searchView;
 
     private List<Lecture> lectures;
     private boolean resultsRetrieved;
@@ -58,10 +63,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_manage_lectures);
 
         //Check if authorization token is valid
-        AuthHandler.validate(MainActivity.this, "student");
+        AuthHandler.validate(ManageLecturesActivity.this, "admin");
 
         //Setup toolbar
         mToolbar = findViewById(R.id.toolbar);
@@ -95,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        lectureAdapter = new LectureAdapter(this, lectures, "student");
+        lectureAdapter = new LectureAdapter(this, lectures, "admin");
         recyclerView.setAdapter(lectureAdapter);
 
         //When a date is selected
@@ -131,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onFailure(Call<List<Lecture>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageLecturesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 mProgressDialog.dismiss();
             }
         });
@@ -149,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Call<List<Lecture>> call = lectureClient.getMyLectures(ExtraUtilities.getStringDate(date));
 
         //Show progress
-        mProgressDialog.setMessage("Loading timetable...");
+        mProgressDialog.setMessage("Loading lectures...");
         mProgressDialog.show();
 
         call.enqueue(new Callback<List<Lecture>>() {
@@ -158,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 lectures = response.body();
                 if(lectures != null) {
                     if(lectures.size() == 0) {
-                        Toast.makeText(MainActivity.this, "No lectures for this day", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ManageLecturesActivity.this, "No lectures for this day", Toast.LENGTH_SHORT).show();
                     }
                     lectureAdapter.setLectures(lectures);
                     mProgressDialog.dismiss();
@@ -168,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onFailure(Call<List<Lecture>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManageLecturesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 mProgressDialog.dismiss();
             }
         });
@@ -181,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Handle side drawer navigation
-        NavHandler.handleStudentNav(item, MainActivity.this);
+        NavHandler.handleAdminNav(item, ManageLecturesActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -194,9 +199,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                lectureAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                lectureAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_search) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         //Check if authorization token is valid
-        AuthHandler.validate(MainActivity.this, "student");
+        AuthHandler.validate(ManageLecturesActivity.this, "admin");
     }
 }

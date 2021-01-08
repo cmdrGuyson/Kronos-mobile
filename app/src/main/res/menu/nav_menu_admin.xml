@@ -6,7 +6,7 @@
             <item android:title="Manage Students" android:icon="@drawable/ic_baseline_face_24" android:id="@+id/nav_manage_students" />
             <item android:title="Manage Classes" android:icon="@drawable/ic_baseline_school_24" android:id="@+id/nav_manage_classes"/>
             <item android:title="Manage Modules" android:icon="@drawable/ic_baseline_book_24" android:id="@+id/nav_manage_modules"/>
-            <item android:title="Manage Lectures" android:icon="@drawable/ic_baseline_menu_book_24" />
+            <item android:title="Manage Lectures" android:icon="@drawable/ic_baseline_menu_book_24" android:id="@+id/nav_manage_lectures"/>
             <item android:title="Manage Rooms" android:icon="@drawable/ic_baseline_meeting_room_24" android:id="@+id/nav_manage_rooms"/>
         </menu>
     </item>

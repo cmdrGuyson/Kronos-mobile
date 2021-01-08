@@ -98,13 +98,15 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
         holder.mCredits.setText("CREDITS " + filteredModules.get(position).getCredits());
         holder.mLecturer.setText(filteredModules.get(position).getLecturer().getFirstName() +" "+ filteredModules.get(position).getLecturer().getLastName());
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                deleteModule(filteredModules.get(position).getModuleID());
-                return false;
-            }
-        });
+        if(role.equals("admin")) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    deleteModule(filteredModules.get(position).getModuleID());
+                    return false;
+                }
+            });
+        }
 
         if(role.equals("student")) {
 
