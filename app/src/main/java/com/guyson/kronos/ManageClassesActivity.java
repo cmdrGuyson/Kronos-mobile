@@ -119,7 +119,11 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
             @Override
             public void onResponse(Call<List<Class>> call, Response<List<Class>> response) {
                 classes = response.body();
-                classAdapter.setClasses(classes);
+                if(classes!=null){
+                    classAdapter.setClasses(classes);
+                }else{
+                    Toast.makeText(ManageClassesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
                 mProgressDialog.dismiss();
             }
 

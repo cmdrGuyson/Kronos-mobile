@@ -113,7 +113,7 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
             boolean isEnrolled = filteredModules.get(position).isEnrolled();
 
             //If student is enrolled in the module
-            if (isEnrolled) {
+            if (!isEnrolled) {
                 holder.mEnrollButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

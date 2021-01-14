@@ -13,4 +13,7 @@ public interface ModuleClient {
     @GET("modules")
     Call<List<Module>> getModules();
 
+    //Get list of logged in students modules
+    @GET("my-modules")
+    Call<List<Module>> getMyModules();
 }

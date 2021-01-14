@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.guyson.kronos.R;
-import com.guyson.kronos.model.User;
+import com.guyson.kronos.model.Lecturer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +28,15 @@ import java.util.function.BiConsumer;
 public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHolder> implements Filterable {
 
     private Context context;
-    private List<User> lecturers;
-    private List<User> filteredLecturers;
+    private List<Lecturer> lecturers;
+    private List<Lecturer> filteredLecturers;
 
-    public LecturerAdapter(Context context, List<User> lecturers) {
+    public LecturerAdapter(Context context, List<Lecturer> lecturers) {
         this.context = context;
         this.lecturers = lecturers;
     }
 
-    public void setLecturers(final List<User> lecturers){
+    public void setLecturers(final List<Lecturer> lecturers){
         if(this.lecturers == null){
             this.lecturers = lecturers;
             this.filteredLecturers = lecturers;
@@ -55,17 +55,17 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return LecturerAdapter.this.lecturers.get(oldItemPosition).getUsername() == lecturers.get(newItemPosition).getUsername();
+                    return LecturerAdapter.this.lecturers.get(oldItemPosition).getLecturerID() == lecturers.get(newItemPosition).getLecturerID();
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
 
-                    User newUser = LecturerAdapter.this.lecturers.get(oldItemPosition);
+                    Lecturer newLecturer = LecturerAdapter.this.lecturers.get(oldItemPosition);
 
-                    User oldUser = lecturers.get(newItemPosition);
+                    Lecturer oldLecturer = lecturers.get(newItemPosition);
 
-                    return newUser.getUsername() == oldUser.getUsername() ;
+                    return newLecturer.getLecturerID() == oldLecturer.getLecturerID() ;
                 }
             });
             this.lecturers = lecturers;
@@ -83,13 +83,15 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull LecturerAdapter.ViewHolder holder, final int position) {
-        holder.mName.setText(filteredLecturers.get(position).getFirstName() + " " + filteredLecturers.get(position).getLastName());
-        holder.mUsername.setText(filteredLecturers.get(position).getUsername());
+        holder.mName.setText(String.format("%s %s", filteredLecturers.get(position).getFirstName(), filteredLecturers.get(position).getLastName()));
+        holder.mEmail.setText(filteredLecturers.get(position).getEmail());
+        holder.mID.setText(String.valueOf(filteredLecturers.get(position).getLecturerID()));
+        holder.mType.setText(filteredLecturers.get(position).getType());
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                deleteLecturer(filteredLecturers.get(position).getUsername());
+                deleteLecturer(filteredLecturers.get(position).getLecturerID());
                 return false;
             }
         });
@@ -110,9 +112,10 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
                 if (charString.isEmpty()) {
                     filteredLecturers = lecturers;
                 } else {
-                    List<User> filteredList = new ArrayList<>();
-                    for (User user : lecturers) {
-                        if (user.getFirstName().toLowerCase().contains(charString.toLowerCase()) || user.getLastName().toLowerCase().contains(charString.toLowerCase())) {
+                    List<Lecturer> filteredList = new ArrayList<>();
+                    for (Lecturer user : lecturers) {
+                        String searchString = charString.toLowerCase();
+                        if (user.getFirstName().toLowerCase().contains(searchString) || user.getLastName().toLowerCase().contains(searchString) || user.getType().toLowerCase().contains(searchString) || String.valueOf(user.getLecturerID()).contains(searchString) || user.getEmail().toLowerCase().contains(searchString)) {
                             filteredList.add(user);
                         }
                     }
@@ -126,28 +129,30 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                filteredLecturers = (ArrayList<User>) filterResults.values;
+                filteredLecturers = (ArrayList<Lecturer>) filterResults.values;
                 notifyDataSetChanged();
             }
         };
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mName, mUsername;
+        TextView mName, mEmail, mType, mID;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            mID = itemView.findViewById(R.id.id);
             mName = itemView.findViewById(R.id.name);
-            mUsername = itemView.findViewById(R.id.username);
+            mEmail = itemView.findViewById(R.id.email);
+            mType = itemView.findViewById(R.id.type);
 
         }
     }
 
-    private void deleteLecturer(String username) {
+    private void deleteLecturer(int id) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle("Delete lecturer");
-        builder.setMessage("Are you sure that you want delete "+username+" ?");
+        builder.setMessage("Are you sure that you want delete "+id+" ?");
 
         //When "Delete" button is clicked
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {

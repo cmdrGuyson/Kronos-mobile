@@ -90,7 +90,7 @@ public class ViewModulesActivity extends AppCompatActivity  implements Navigatio
         moduleAdapter = new ModuleAdapter(this, modules, "student");
         recyclerView.setAdapter(moduleAdapter);
 
-        getAllLecturers();
+        getAllModules();
     }
 
     @Override
@@ -109,7 +109,7 @@ public class ViewModulesActivity extends AppCompatActivity  implements Navigatio
 
     }
 
-    private void getAllLecturers() {
+    private void getAllModules() {
         Call<List<Module>> call = userClient.getModules();
 
         //Show progress
@@ -120,7 +120,11 @@ public class ViewModulesActivity extends AppCompatActivity  implements Navigatio
             @Override
             public void onResponse(Call<List<Module>> call, Response<List<Module>> response) {
                 modules = response.body();
-                moduleAdapter.setModules(modules);
+                if(modules!=null){
+                    moduleAdapter.setModules(modules);
+                }else{
+                    Toast.makeText(ViewModulesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
                 mProgressDialog.dismiss();
             }
 

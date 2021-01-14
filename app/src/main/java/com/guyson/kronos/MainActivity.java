@@ -125,8 +125,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (lectures != null) {
                     resultsRetrieved = true;
                     setupTimetable();
-                    mProgressDialog.dismiss();
+
+                }else{
+                    Toast.makeText(MainActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
+                mProgressDialog.dismiss();
             }
 
             @Override
@@ -161,8 +164,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(MainActivity.this, "No lectures for this day", Toast.LENGTH_SHORT).show();
                     }
                     lectureAdapter.setLectures(lectures);
-                    mProgressDialog.dismiss();
+
+                }else {
+                    Toast.makeText(MainActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
+                mProgressDialog.dismiss();
 
             }
 

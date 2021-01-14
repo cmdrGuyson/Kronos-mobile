@@ -130,8 +130,10 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
                 if (lectures != null) {
                     resultsRetrieved = true;
                     setupTimetable();
-                    mProgressDialog.dismiss();
+                }else{
+                    Toast.makeText(ManageLecturesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
+                mProgressDialog.dismiss();
             }
 
             @Override
@@ -166,8 +168,11 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
                         Toast.makeText(ManageLecturesActivity.this, "No lectures for this day", Toast.LENGTH_SHORT).show();
                     }
                     lectureAdapter.setLectures(lectures);
-                    mProgressDialog.dismiss();
+
+                }else{
+                    Toast.makeText(ManageLecturesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
+                mProgressDialog.dismiss();
 
             }
 

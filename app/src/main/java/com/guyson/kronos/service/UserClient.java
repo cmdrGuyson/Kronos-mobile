@@ -21,9 +21,6 @@ public interface UserClient {
     @GET("user")
     Call<User> getUser(@Header("Authorization") String token);
 
-    //Get all lecturers
-    @GET("lecturers")
-    Call<List<User>> getLecturers();
 
     //Get all students
     @GET("students")

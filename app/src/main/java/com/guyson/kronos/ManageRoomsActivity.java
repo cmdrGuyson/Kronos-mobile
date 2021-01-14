@@ -117,7 +117,11 @@ public class ManageRoomsActivity extends AppCompatActivity  implements Navigatio
             @Override
             public void onResponse(Call<List<Room>> call, Response<List<Room>> response) {
                 rooms = response.body();
-                roomAdapter.setRooms(rooms);
+                if(rooms!=null){
+                    roomAdapter.setRooms(rooms);
+                }else{
+                    Toast.makeText(ManageRoomsActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
                 mProgressDialog.dismiss();
             }
 

@@ -11,6 +11,7 @@ import com.guyson.kronos.ManageLecturesActivity;
 import com.guyson.kronos.ManageModulesActivity;
 import com.guyson.kronos.ManageRoomsActivity;
 import com.guyson.kronos.ManageStudentsActivity;
+import com.guyson.kronos.MyModulesActivity;
 import com.guyson.kronos.R;
 import com.guyson.kronos.SettingsActivity;
 import com.guyson.kronos.ViewModulesActivity;
@@ -100,6 +101,13 @@ public class NavHandler {
             case R.id.nav_enroll: {
                 //Enroll button
                 Intent intent = new Intent(context, ViewModulesActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+                break;
+            }
+            case R.id.nav_my_modules: {
+                //My Modules Button
+                Intent intent = new Intent(context, MyModulesActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
                 break;

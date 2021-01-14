@@ -119,7 +119,11 @@ public class ManageStudentsActivity extends AppCompatActivity  implements Naviga
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 students = response.body();
-                studentAdapter.setStudents(students);
+                if(students!=null){
+                    studentAdapter.setStudents(students);
+                }else{
+                    Toast.makeText(ManageStudentsActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
                 mProgressDialog.dismiss();
             }
 

@@ -3,10 +3,10 @@ package com.guyson.kronos.model;
 public class Module {
     private int moduleID, credits;
     private String name, description;
-    private User lecturer;
+    private Lecturer lecturer;
     private boolean isEnrolled;
 
-    public Module(int moduleID, int credits, String name, String description, User lecturer, boolean isEnrolled) {
+    public Module(int moduleID, int credits, String name, String description, Lecturer lecturer, boolean isEnrolled) {
         this.moduleID = moduleID;
         this.credits = credits;
         this.name = name;
@@ -47,11 +47,11 @@ public class Module {
         this.description = description;
     }
 
-    public User getLecturer() {
+    public Lecturer getLecturer() {
         return lecturer;
     }
 
-    public void setLecturer(User lecturer) {
+    public void setLecturer(Lecturer lecturer) {
         this.lecturer = lecturer;
     }
 

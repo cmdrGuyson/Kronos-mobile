@@ -23,7 +23,10 @@ import android.widget.Toast;
 import com.auth0.android.jwt.JWT;
 import com.google.android.material.navigation.NavigationView;
 import com.guyson.kronos.adapter.LecturerAdapter;
+import com.guyson.kronos.model.Lecture;
+import com.guyson.kronos.model.Lecturer;
 import com.guyson.kronos.model.User;
+import com.guyson.kronos.service.LecturerClient;
 import com.guyson.kronos.service.RetrofitClientInstance;
 import com.guyson.kronos.service.UserClient;
 import com.guyson.kronos.util.AuthHandler;
@@ -47,9 +50,9 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
     private LecturerAdapter lecturerAdapter;
     private SearchView searchView;
 
-    private List<User> lecturers;
+    private List<Lecturer> lecturers;
 
-    private UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+    private LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,24 +112,26 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
     }
 
     private void getAllLecturers() {
-        Call<List<User>> call = userClient.getLecturers();
+        Call<List<Lecturer>> call = lecturerClient.getLecturers();
 
         //Show progress
         mProgressDialog.setMessage("Loading lecturers...");
         mProgressDialog.show();
 
-        call.enqueue(new Callback<List<User>>() {
+        call.enqueue(new Callback<List<Lecturer>>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+            public void onResponse(Call<List<Lecturer>> call, Response<List<Lecturer>> response) {
                 lecturers = response.body();
                 if(lecturers != null) {
                     lecturerAdapter.setLecturers(lecturers);
-                    mProgressDialog.dismiss();
+                }else{
+                    Toast.makeText(ManageLecturersActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
+                mProgressDialog.dismiss();
             }
 
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
+            public void onFailure(Call<List<Lecturer>> call, Throwable t) {
                 Toast.makeText(ManageLecturersActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 mProgressDialog.dismiss();
             }

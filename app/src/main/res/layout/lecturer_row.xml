@@ -23,7 +23,7 @@
             android:layout_weight="2"
             android:paddingLeft="15dp"
             android:src="@drawable/ic_baseline_supervised_user_circle_24"
-            app:tint="@color/colorIcon"></ImageView>
+            app:tint="@color/colorIcon"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -31,16 +31,16 @@
             android:layout_weight="85">
 
             <TextView
-                android:id="@+id/_username"
+                android:id="@+id/_id"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:padding="5dp"
-                android:text="Username"
+                android:text="ID"
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
-                android:id="@+id/username"
+                android:id="@+id/id"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -54,7 +54,7 @@
                 android:id="@+id/_name"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/_username"
+                android:layout_below="@id/_id"
                 android:layout_marginLeft="15dp"
                 android:padding="5dp"
                 android:text="Name"
@@ -64,7 +64,7 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/_username"
+                android:layout_below="@+id/_id"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="30dp"
                 android:gravity="right"
@@ -72,6 +72,51 @@
                 android:text="Saman Gamage"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/_email"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/_name"
+                android:layout_marginLeft="15dp"
+                android:padding="5dp"
+                android:text="Email"
+                android:textColor="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/_name"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:gravity="right"
+                android:padding="5dp"
+                android:text="saman@email.com"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/_type"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/_email"
+                android:layout_marginLeft="15dp"
+                android:padding="5dp"
+                android:text="Type"
+                android:textColor="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/_email"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:gravity="right"
+                android:padding="5dp"
+                android:text="VISITING"
+                android:textColor="@color/colorPrimary"/>
 
             <!--        <Button-->
             <!--            android:id="@+id/textButton"-->
