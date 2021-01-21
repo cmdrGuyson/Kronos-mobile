@@ -12,6 +12,8 @@ import com.guyson.kronos.LoginActivity;
 public class AuthHandler {
 
     public static String validate(Context context, String userRole){
+
+        //Get authorization token and user role from shared preferences
         SharedPreferences sharedPreferences = context.getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("auth_token", null);
         String role = sharedPreferences.getString("role", null);
@@ -29,16 +31,19 @@ public class AuthHandler {
             if(isExpired || !role.equals(userRole)){
 
                 if(isExpired) {
+                    //Log user out
                     AuthHandler.logout(context);
 
+                    //Direct user to login activity
                     Intent intent = new Intent(context, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
                 }else if(userRole.equals("all")) {
-
+                    //If validating for an intent that allows both users to use
                     return role;
 
                 }else{
+                    //Direct user to login activity
                     Intent intent = new Intent(context, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
@@ -56,13 +61,17 @@ public class AuthHandler {
         return null;
     }
 
+    //Method to logout user
     public static void logout(Context context){
+
+        //Reset authorization token and user role from shared preferences
         SharedPreferences sharedPreferences = context.getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("auth_token", null);
         editor.putString("role", null);
         editor.apply();
 
+        //Send user to login screen
         Intent accountIntent = new Intent(context, LoginActivity.class);
         accountIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(accountIntent);
