@@ -205,4 +205,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Check if authorization token is valid
         AuthHandler.validate(MainActivity.this, "student");
     }
+
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
+        // Not calling **super**, disables back button in current screen.
+    }
 }

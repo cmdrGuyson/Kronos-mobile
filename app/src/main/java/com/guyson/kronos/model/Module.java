@@ -4,15 +4,15 @@ public class Module {
     private int moduleID, credits;
     private String name, description;
     private Lecturer lecturer;
-    private boolean isEnrolled;
+    private boolean enrolled;
 
-    public Module(int moduleID, int credits, String name, String description, Lecturer lecturer, boolean isEnrolled) {
+    public Module(int moduleID, int credits, String name, String description, Lecturer lecturer, boolean enrolled) {
         this.moduleID = moduleID;
         this.credits = credits;
         this.name = name;
         this.description = description;
         this.lecturer = lecturer;
-        this.isEnrolled = isEnrolled;
+        this.enrolled = enrolled;
     }
 
     public int getModuleID() {
@@ -56,10 +56,10 @@ public class Module {
     }
 
     public boolean isEnrolled() {
-        return isEnrolled;
+        return enrolled;
     }
 
     public void setEnrolled(boolean enrolled) {
-        isEnrolled = enrolled;
+        this.enrolled = enrolled;
     }
 }

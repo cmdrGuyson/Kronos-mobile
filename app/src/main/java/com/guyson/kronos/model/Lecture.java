@@ -6,9 +6,9 @@ public class Lecture {
     private Module module;
     private Room room;
     private String date, startTime;
-    private float duration;
+    private int duration;
 
-    public Lecture(int lectureID, Module module, Room room, String date, String startTime, float duration) {
+    public Lecture(int lectureID, Module module, Room room, String date, String startTime, int duration) {
         this.lectureID = lectureID;
         this.module = module;
         this.room = room;
@@ -57,11 +57,11 @@ public class Lecture {
         this.startTime = startTime;
     }
 
-    public float getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(float duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 }

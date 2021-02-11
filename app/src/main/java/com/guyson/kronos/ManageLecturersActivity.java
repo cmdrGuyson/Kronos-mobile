@@ -171,4 +171,10 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+        // super.onBackPressed();
+        // Not calling **super**, disables back button in current screen.
+    }
 }
