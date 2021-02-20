@@ -51,6 +51,7 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
     private SearchView searchView;
 
     private List<Lecturer> lecturers;
+    private String token;
 
     private LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
 
@@ -61,6 +62,10 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
 
         //Check if authorization token is valid
         AuthHandler.validate(ManageLecturersActivity.this, "admin");
+
+        //Retrieve JWT Token
+        SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
+        token = "Bearer "+sharedPreferences.getString("auth_token", null);
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -112,7 +117,7 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
     }
 
     private void getAllLecturers() {
-        Call<List<Lecturer>> call = lecturerClient.getLecturers();
+        Call<List<Lecturer>> call = lecturerClient.getLecturers(token);
 
         //Show progress
         mProgressDialog.setMessage("Loading lecturers...");
@@ -122,6 +127,8 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
             @Override
             public void onResponse(Call<List<Lecturer>> call, Response<List<Lecturer>> response) {
                 lecturers = response.body();
+
+                //Handle null pointer errors
                 if(lecturers != null) {
                     lecturerAdapter.setLecturers(lecturers);
                 }else{
@@ -167,6 +174,11 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
         int id = item.getItemId();
         if (id == R.id.action_search) {
             return true;
+        }else if (id == R.id.add) {
+            //Direct to AddLecturerActivity
+            Intent intent = new Intent(ManageLecturersActivity.this, AddLecturerActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsActivity"
+    tools:context=".AddLecturerActivity"
     android:id="@+id/drawer_layout">
 
     <RelativeLayout
@@ -23,88 +23,91 @@
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:id="@+id/toolbar"
-                    app:title="Settings"/>
+                    app:title="Add Lecturer"/>
             </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/otf_first_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
-            android:text="Change Password"
-            android:layout_centerInParent="true"
+            android:hint="First Name"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
             android:layout_below="@id/coordinator_layout"
-            android:id="@+id/title_tv" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/otf_password_old"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Old Password"
-            android:layout_marginTop="12dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_below="@id/title_tv"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_old_password"
+                android:id="@+id/input_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="textPassword" />
+                android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/otf_password_new"
+            android:id="@+id/otf_last_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="New Password"
+            android:hint="Last Name"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
-            android:layout_below="@id/otf_password_old"
+            android:layout_below="@id/otf_first_name"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_new_password"
+                android:id="@+id/input_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="textPassword" />
+                android:singleLine="true"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/otf_password_confirm"
+            android:id="@+id/otf_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Confirm Password"
+            android:hint="Email"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
-            android:layout_below="@id/otf_password_new"
+            android:layout_below="@id/otf_last_name"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_confirm_password"
+                android:id="@+id/input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="textPassword" />
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/otf_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Type"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_below="@id/otf_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/type_dropdown"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:layout_below="@id/otf_password_confirm"
+            android:layout_below="@id/otf_type"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="32dp"
             android:layout_marginTop="12dp"
             android:layout_marginRight="32dp"
-            android:id="@+id/change_button"
-            android:text="Change Password" />
-
+            android:id="@+id/add_button"
+            android:text="Add Lecturer" />
 
     </RelativeLayout>
 

@@ -57,6 +57,7 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
 
     private List<Lecture> lectures;
     private boolean resultsRetrieved;
+    private String token;
 
     private LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
 
@@ -67,6 +68,10 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
 
         //Check if authorization token is valid
         AuthHandler.validate(ManageLecturesActivity.this, "admin");
+
+        //Retrieve JWT Token
+        SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
+        token = "Bearer "+sharedPreferences.getString("auth_token", null);
 
         //Setup toolbar
         mToolbar = findViewById(R.id.toolbar);
@@ -116,7 +121,7 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
     }
 
     private void getAllLectures() {
-        Call<List<Lecture>> call = lectureClient.getAllLectures();
+        Call<List<Lecture>> call = lectureClient.getAllLectures(token);
 
         //Show progress
         mProgressDialog.setMessage("Loading timetable...");
@@ -153,7 +158,7 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
 
     private void dateChangeHandler(CalendarDay date) {
 
-        Call<List<Lecture>> call = lectureClient.getMyLectures(ExtraUtilities.getStringDate(date));
+        Call<List<Lecture>> call = lectureClient.getAllLecturesByDate(token, ExtraUtilities.getStringDate(date));
 
         //Show progress
         mProgressDialog.setMessage("Loading lectures...");

@@ -14,7 +14,7 @@ import retrofit2.http.POST;
 public interface UserClient {
 
     //Login as a user
-    @POST("login")
+    @POST("auth/login")
     Call<User> login(@Body LoginCredentials loginCredentials);
 
     //Get user details of logged in user

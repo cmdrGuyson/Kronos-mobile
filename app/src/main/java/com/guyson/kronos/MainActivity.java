@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private List<Lecture> lectures;
     private boolean resultsRetrieved;
+    private String token;
 
     private LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
 
@@ -62,6 +64,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Check if authorization token is valid
         AuthHandler.validate(MainActivity.this, "student");
+
+        //Retrieve JWT Token
+        SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
+        token = "Bearer "+sharedPreferences.getString("auth_token", null);
 
         //Setup toolbar
         mToolbar = findViewById(R.id.toolbar);
@@ -111,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getAllLectures() {
-        Call<List<Lecture>> call = lectureClient.getAllLectures();
+        Call<List<Lecture>> call = lectureClient.getAllLectures(token);
 
         //Show progress
         mProgressDialog.setMessage("Loading timetable...");
@@ -122,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<List<Lecture>> call, Response<List<Lecture>> response) {
                 lectures = response.body();
+
+                //Handle null pointer errors
                 if (lectures != null) {
                     resultsRetrieved = true;
                     setupTimetable();
@@ -147,9 +155,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    //When user changes date in calender load lectures for new date
     private void dateChangeHandler(CalendarDay date) {
 
-        Call<List<Lecture>> call = lectureClient.getMyLectures(ExtraUtilities.getStringDate(date));
+        Call<List<Lecture>> call = lectureClient.getAllLecturesByDate(token, ExtraUtilities.getStringDate(date));
 
         //Show progress
         mProgressDialog.setMessage("Loading timetable...");
@@ -159,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(Call<List<Lecture>> call, Response<List<Lecture>> response) {
                 lectures = response.body();
+
+                //Handle null pointers
                 if(lectures != null) {
                     if(lectures.size() == 0) {
                         Toast.makeText(MainActivity.this, "No lectures for this day", Toast.LENGTH_SHORT).show();

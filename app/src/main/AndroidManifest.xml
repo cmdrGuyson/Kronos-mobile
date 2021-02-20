@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="${usesCleartextTraffic}">
-        <activity android:name=".MyModulesActivity"></activity>
+        <activity android:name=".AddLecturerActivity"></activity>
+        <activity android:name=".MyModulesActivity" />
         <activity android:name=".ManageLecturesActivity" />
         <activity android:name=".ViewModulesActivity" />
         <activity android:name=".SettingsActivity" />

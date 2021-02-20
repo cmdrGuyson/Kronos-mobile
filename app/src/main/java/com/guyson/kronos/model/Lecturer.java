@@ -13,6 +13,8 @@ public class Lecturer {
         this.lecturerID = lecturerID;
     }
 
+    public Lecturer() {}
+
     public String getFirstName() {
         return firstName;
     }

@@ -86,7 +86,7 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
         holder.mName.setText(String.format("%s %s", filteredLecturers.get(position).getFirstName(), filteredLecturers.get(position).getLastName()));
         holder.mEmail.setText(filteredLecturers.get(position).getEmail());
         holder.mID.setText(String.valueOf(filteredLecturers.get(position).getLecturerID()));
-        holder.mType.setText(filteredLecturers.get(position).getType());
+        holder.mType.setText(filteredLecturers.get(position).getType().toUpperCase());
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -115,6 +115,8 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
                     List<Lecturer> filteredList = new ArrayList<>();
                     for (Lecturer user : lecturers) {
                         String searchString = charString.toLowerCase();
+
+                        //Filter through fields and add to filtered list
                         if (user.getFirstName().toLowerCase().contains(searchString) || user.getLastName().toLowerCase().contains(searchString) || user.getType().toLowerCase().contains(searchString) || String.valueOf(user.getLecturerID()).contains(searchString) || user.getEmail().toLowerCase().contains(searchString)) {
                             filteredList.add(user);
                         }

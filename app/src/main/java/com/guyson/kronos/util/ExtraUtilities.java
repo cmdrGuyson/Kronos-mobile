@@ -12,12 +12,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ExtraUtilities {
 
     //Get list of CalendarDays to be used to highlight the calendar from lectures
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static List<CalendarDay> getCalendarDays(List<Lecture> lectures){
+    public static List<CalendarDay> getCalendarDays(List<Lecture> lectures) {
         List<CalendarDay> calendarDays = new ArrayList<>();
         for (Lecture lecture : lectures) {
 
@@ -31,8 +32,25 @@ public class ExtraUtilities {
     }
 
     //Get string date to be used in API call from CalendarDay
-    public static String getStringDate(CalendarDay date){
-        return String.format("%d-%d-%d", date.getDay(), date.getMonth(), date.getYear());
+    public static String getStringDate(CalendarDay date) {
+
+        String day = date.getDay() < 10 ? "0"+date.getDay() : String.valueOf(date.getDay());
+        String month = date.getMonth() < 10 ? "0"+date.getMonth() : String.valueOf(date.getMonth());
+
+        return day+"-"+month+"-"+date.getYear();
+    }
+
+    //Method to validate emails
+    public static boolean isEmailValid(String email) {
+        final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
+        return EMAIL_REGEX.matcher(email).matches();
+    }
+
+    //Capitalize first letter of string
+    public static String capitalize(String str)
+    {
+        if(str == null) return null;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
 }

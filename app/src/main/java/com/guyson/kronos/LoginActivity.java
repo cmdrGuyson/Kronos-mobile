@@ -123,13 +123,9 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(homePageIntent);
                         finish();
                     }
-                    // Invalid username
-                    else if(response.code() == 404){
-                        Toast.makeText(LoginActivity.this, "User not found!", Toast.LENGTH_SHORT).show();
-                    }
                     // Invalid password
-                    else if(response.code() == 400){
-                        Toast.makeText(LoginActivity.this, "Invalid password!", Toast.LENGTH_SHORT).show();
+                    else if(response.code() == 403){
+                        Toast.makeText(LoginActivity.this, "Invalid username or password!", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         Toast.makeText(LoginActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
