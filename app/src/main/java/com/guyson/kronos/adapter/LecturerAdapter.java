@@ -60,8 +60,13 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
         if(this.lecturers == null){
             this.lecturers = lecturers;
             this.filteredLecturers = lecturers;
+
+            //Alert a change in items if lectures
             notifyItemChanged(0, filteredLecturers.size());
-        } else {
+
+        }
+        //If updating items (previously not null)
+        else {
             final DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {
