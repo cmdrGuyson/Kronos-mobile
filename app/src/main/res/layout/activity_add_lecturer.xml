@@ -25,6 +25,7 @@
                     android:id="@+id/toolbar"
                     app:title="Add Lecturer"/>
             </com.google.android.material.appbar.AppBarLayout>
+
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -32,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="First Name"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:layout_below="@id/coordinator_layout"

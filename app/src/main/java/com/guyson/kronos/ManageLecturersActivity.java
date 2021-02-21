@@ -94,7 +94,7 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        lecturerAdapter = new LecturerAdapter(this, lecturers);
+        lecturerAdapter = new LecturerAdapter(this, lecturers, token, mProgressDialog);
         recyclerView.setAdapter(lecturerAdapter);
 
         getAllLecturers();
@@ -116,7 +116,7 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
 
     }
 
-    private void getAllLecturers() {
+    public void getAllLecturers() {
         Call<List<Lecturer>> call = lecturerClient.getLecturers(token);
 
         //Show progress

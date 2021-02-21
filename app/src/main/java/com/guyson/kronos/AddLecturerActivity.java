@@ -155,14 +155,14 @@ public class AddLecturerActivity extends AppCompatActivity implements Navigation
             //Valid user input
 
             //Show progress
-            mProgressDialog.setMessage("Getting things ready...");
+            mProgressDialog.setMessage("Adding lecturer...");
             mProgressDialog.show();
 
             Lecturer lecturer = new Lecturer();
             lecturer.setEmail(email);
             lecturer.setFirstName(firstName);
             lecturer.setLastName(lastName);
-            lecturer.setType(type);
+            lecturer.setType(type.toLowerCase());
 
             Call<ResponseBody> call = lecturerClient.addLecturer(token, lecturer);
 
@@ -195,8 +195,6 @@ public class AddLecturerActivity extends AppCompatActivity implements Navigation
 
                         mProgressDialog.dismiss();
                     }
-
-
                 }
 
                 @Override

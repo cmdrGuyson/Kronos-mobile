@@ -1,7 +1,9 @@
 package com.guyson.kronos.adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,22 +20,40 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.guyson.kronos.AddLecturerActivity;
+import com.guyson.kronos.ManageLecturersActivity;
 import com.guyson.kronos.R;
 import com.guyson.kronos.model.Lecturer;
+import com.guyson.kronos.service.LecturerClient;
+import com.guyson.kronos.service.RetrofitClientInstance;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHolder> implements Filterable {
 
     private Context context;
     private List<Lecturer> lecturers;
     private List<Lecturer> filteredLecturers;
+    private String token;
+    private ProgressDialog mProgressDialog;
 
-    public LecturerAdapter(Context context, List<Lecturer> lecturers) {
+    //Lecturer Retrofit Client
+    LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
+
+    public LecturerAdapter(Context context, List<Lecturer> lecturers, String token, ProgressDialog mProgressDialog) {
         this.context = context;
         this.lecturers = lecturers;
+        this.token = token;
+        this.mProgressDialog = mProgressDialog;
     }
 
     public void setLecturers(final List<Lecturer> lecturers){
@@ -151,7 +171,8 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
         }
     }
 
-    private void deleteLecturer(int id) {
+    //Method to delete lecturers
+    private void deleteLecturer(final int id) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle("Delete lecturer");
         builder.setMessage("Are you sure that you want delete "+id+" ?");
@@ -161,7 +182,48 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "Deleted!", Toast.LENGTH_SHORT).show();
+
+                Call<ResponseBody> call = lecturerClient.deleteLecturer(token, id);
+
+                //Show progress
+                mProgressDialog.setMessage("Deleting...");
+                mProgressDialog.show();
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        //Successfully added
+                        if (response.code()==200) {
+                            Toast.makeText(context, "Successfully deleted!", Toast.LENGTH_SHORT).show();
+
+                            //Reload lecturer list
+                            ManageLecturersActivity activity = (ManageLecturersActivity) context;
+                            activity.getAllLecturers();
+
+                        }
+                        else {
+                            try {
+
+                                // Capture an display specific messages
+                                JSONObject obj = new JSONObject(response.errorBody().string());
+                                Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                            }catch(Exception e) {
+                                Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        mProgressDialog.dismiss();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
             }
         });
 
