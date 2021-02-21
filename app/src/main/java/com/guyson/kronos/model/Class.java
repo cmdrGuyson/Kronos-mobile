@@ -11,6 +11,8 @@ public class Class {
         this.description = description;
     }
 
+    public Class() {}
+
     public int getClassID() {
         return classID;
     }

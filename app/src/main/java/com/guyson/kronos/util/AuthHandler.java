@@ -39,6 +39,8 @@ public class AuthHandler {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
 
+                    return "expired";
+
                 }else if(userRole.equals("all")) {
                     //If validating for an intent that allows both users to use
                     return role;
@@ -48,6 +50,8 @@ public class AuthHandler {
                     Intent intent = new Intent(context, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     context.startActivity(intent);
+
+                    return "unauthorized";
                 }
             }
 
@@ -55,6 +59,8 @@ public class AuthHandler {
             Intent intent = new Intent(context, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(intent);
+
+            return "unauthorized";
         }
 
         return null;

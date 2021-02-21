@@ -63,7 +63,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         //Check if authorization token is valid
-        AuthHandler.validate(MainActivity.this, "student");
+        String result = AuthHandler.validate(MainActivity.this, "student");
+
+        if(result!=null) {
+            if (result.equals("unauthorized") || result.equals("expired")) return;
+        }
 
         //Retrieve JWT Token
         SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);

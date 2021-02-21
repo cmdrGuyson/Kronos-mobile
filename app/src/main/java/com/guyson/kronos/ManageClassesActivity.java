@@ -49,8 +49,9 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
     private SearchView searchView;
 
     private List<Class> classes;
-
     private ClassClient classClient = RetrofitClientInstance.getRetrofitInstance().create(ClassClient.class);
+
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,10 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
 
         //Check if authorization token is valid
         AuthHandler.validate(ManageClassesActivity.this, "admin");
+
+        //Retrieve JWT Token
+        SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
+        token = "Bearer "+sharedPreferences.getString("auth_token", null);
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -87,7 +92,7 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        classAdapter = new ClassAdapter(this, classes);
+        classAdapter = new ClassAdapter(this, classes, token, mProgressDialog);
         recyclerView.setAdapter(classAdapter);
 
         getAllClasses();
@@ -108,8 +113,8 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
 
     }
 
-    private void getAllClasses() {
-        Call<List<Class>> call = classClient.getClasses();
+    public void getAllClasses() {
+        Call<List<Class>> call = classClient.getClasses(token);
 
         //Show progress
         mProgressDialog.setMessage("Loading classes...");
@@ -164,6 +169,12 @@ public class ManageClassesActivity extends AppCompatActivity  implements Navigat
         int id = item.getItemId();
         if (id == R.id.action_search) {
             return true;
+        } else if (id == R.id.add) {
+
+            //Direct to AddClassActivity
+            Intent intent = new Intent(ManageClassesActivity.this, AddClassActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
