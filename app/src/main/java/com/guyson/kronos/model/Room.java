@@ -3,7 +3,6 @@ package com.guyson.kronos.model;
 public class Room {
     private int roomID;
     private String description;
-
     private String type;
 
     public Room(int roomID, String description, String type) {
@@ -11,6 +10,8 @@ public class Room {
         this.description = description;
         this.type = type;
     }
+
+    public Room() {}
 
     public int getRoomID() {
         return roomID;

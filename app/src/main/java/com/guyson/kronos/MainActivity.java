@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         //Check if authorization token is valid
         String result = AuthHandler.validate(MainActivity.this, "student");
@@ -68,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(result!=null) {
             if (result.equals("unauthorized") || result.equals("expired")) return;
         }
+
+        //Load layout only after authorization
+        setContentView(R.layout.activity_main);
 
         //Retrieve JWT Token
         SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);

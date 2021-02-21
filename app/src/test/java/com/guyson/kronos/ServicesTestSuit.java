@@ -30,6 +30,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ServicesTestSuit {
+
+    private String token;
+
     @Test
     public void testLoginStudent() {
         UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
@@ -39,6 +42,9 @@ public class ServicesTestSuit {
         try {
             Response<User> response = call.execute();
             User user = response.body();
+
+            //Set JWT token
+            token = user.getToken();
 
             assertTrue("Login as Student",response.isSuccessful() && user.getRole().equals("student"));
 
@@ -71,7 +77,7 @@ public class ServicesTestSuit {
     @Test
     public void testGetLecturers() {
         LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
-        Call<List<Lecturer>> call = lecturerClient.getLecturers();
+        Call<List<Lecturer>> call = lecturerClient.getLecturers(token);
 
         try {
             Response<List<Lecturer>> response = call.execute();
@@ -89,7 +95,7 @@ public class ServicesTestSuit {
     @Test
     public void testGetClasses() {
         ClassClient classClient = RetrofitClientInstance.getRetrofitInstance().create(ClassClient.class);
-        Call<List<Class>> call = classClient.getClasses();
+        Call<List<Class>> call = classClient.getClasses(token);
 
         try {
             Response<List<Class>> response = call.execute();
@@ -107,7 +113,7 @@ public class ServicesTestSuit {
     @Test
     public void testGetLectures() {
         LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
-        Call<List<Lecture>> call = lectureClient.getAllLectures();
+        Call<List<Lecture>> call = lectureClient.getAllLectures(token);
 
         try {
             Response<List<Lecture>> response = call.execute();

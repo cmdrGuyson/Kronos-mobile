@@ -48,6 +48,8 @@ public class ManageRoomsActivity extends AppCompatActivity  implements Navigatio
 
     private List<Room> rooms;
 
+    private String token;
+
     private RoomClient roomClient = RetrofitClientInstance.getRetrofitInstance().create(RoomClient.class);
 
     @Override
@@ -57,6 +59,10 @@ public class ManageRoomsActivity extends AppCompatActivity  implements Navigatio
 
         //Check if authorization token is valid
         AuthHandler.validate(ManageRoomsActivity.this, "admin");
+
+        //Retrieve JWT Token
+        SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
+        token = "Bearer "+sharedPreferences.getString("auth_token", null);
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -85,7 +91,7 @@ public class ManageRoomsActivity extends AppCompatActivity  implements Navigatio
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        roomAdapter = new RoomAdapter(this, rooms);
+        roomAdapter = new RoomAdapter(this, rooms, token, mProgressDialog);
         recyclerView.setAdapter(roomAdapter);
 
         getAllRooms();
@@ -106,8 +112,8 @@ public class ManageRoomsActivity extends AppCompatActivity  implements Navigatio
 
     }
 
-    private void getAllRooms() {
-        Call<List<Room>> call = roomClient.getRooms();
+    public void getAllRooms() {
+        Call<List<Room>> call = roomClient.getRooms(token);
 
         //Show progress
         mProgressDialog.setMessage("Loading rooms...");
@@ -162,6 +168,12 @@ public class ManageRoomsActivity extends AppCompatActivity  implements Navigatio
         int id = item.getItemId();
         if (id == R.id.action_search) {
             return true;
+        }else if (id == R.id.add) {
+
+            //Direct to AddRoomActivity
+            Intent intent = new Intent(ManageRoomsActivity.this, AddRoomActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
