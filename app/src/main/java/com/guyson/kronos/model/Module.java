@@ -1,7 +1,18 @@
 package com.guyson.kronos.model;
 
 public class Module {
-    private int moduleID, credits;
+    private int moduleID;
+    private int credits;
+
+    public int getLecturerID() {
+        return lecturerID;
+    }
+
+    public void setLecturerID(int lecturerID) {
+        this.lecturerID = lecturerID;
+    }
+
+    private int lecturerID;
     private String name, description;
     private Lecturer lecturer;
     private boolean enrolled;
@@ -14,6 +25,8 @@ public class Module {
         this.lecturer = lecturer;
         this.enrolled = enrolled;
     }
+
+    public Module() {}
 
     public int getModuleID() {
         return moduleID;

@@ -52,7 +52,7 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
 
     private List<Module> modules;
 
-    private ModuleClient userClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
+    private ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,10 +93,10 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        moduleAdapter = new ModuleAdapter(this, modules, "admin");
+        moduleAdapter = new ModuleAdapter(this, modules, "admin", token, mProgressDialog);
         recyclerView.setAdapter(moduleAdapter);
 
-        getAllLecturers();
+        getAllModules();
     }
 
     @Override
@@ -115,8 +115,8 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
 
     }
 
-    private void getAllLecturers() {
-        Call<List<Module>> call = userClient.getModules(token);
+    public void getAllModules() {
+        Call<List<Module>> call = moduleClient.getModules(token);
 
         //Show progress
         mProgressDialog.setMessage("Loading modules...");
@@ -171,6 +171,11 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
         int id = item.getItemId();
         if (id == R.id.action_search) {
             return true;
+        }else if (id == R.id.add) {
+            //Direct to AddLecturerActivity
+            Intent intent = new Intent(ManageModulesActivity.this, AddModuleActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

@@ -116,7 +116,7 @@ public class ViewModulesActivity extends AppCompatActivity  implements Navigatio
     }
 
     private void getAllModules() {
-        Call<List<Module>> call = userClient.getModules(token);
+        Call<List<Module>> call = userClient.getStudentModules(token);
 
         //Show progress
         mProgressDialog.setMessage("Loading modules...");

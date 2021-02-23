@@ -1,5 +1,6 @@
 package com.guyson.kronos.adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -19,11 +20,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.guyson.kronos.ManageLecturersActivity;
+import com.guyson.kronos.ManageModulesActivity;
 import com.guyson.kronos.R;
 import com.guyson.kronos.model.Module;
+import com.guyson.kronos.service.ModuleClient;
+import com.guyson.kronos.service.RetrofitClientInstance;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder> implements Filterable {
 
@@ -32,10 +44,23 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
     private List<Module> filteredModules;
     private String role;
 
+    private String token;
+    private ProgressDialog mProgressDialog;
+
+    private ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
+
     public ModuleAdapter(Context context, List<Module> modules, String role) {
         this.context = context;
         this.modules = modules;
         this.role = role;
+    }
+
+    public ModuleAdapter(Context context, List<Module> modules, String role, String token, ProgressDialog mProgressDialog) {
+        this.context = context;
+        this.modules = modules;
+        this.role = role;
+        this.token = token;
+        this.mProgressDialog = mProgressDialog;
     }
 
     public void setModules(final List<Module> modules){
@@ -125,13 +150,13 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
                     }
                 });
             }else{
-                holder.mEnrollButton.setText("REMOVE");
+                holder.mEnrollButton.setText("UNROLL");
                 holder.mEnrollButton.setBackgroundTintList(context.getResources().getColorStateList(R.color.buttonRed));
                 holder.mEnrollButton.setIcon(context.getResources().getDrawable(R.drawable.ic_baseline_indeterminate_check_box_24));
                 holder.mEnrollButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context, "Un-enrolled!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Unrolled!", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -196,17 +221,56 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
         }
     }
 
-    private void deleteModule(int moduleID) {
+    private void deleteModule(final int id) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle("Delete module");
-        builder.setMessage("Are you sure that you want delete "+moduleID+" ?");
+        builder.setMessage("Are you sure that you want delete "+id+" ?");
 
         //When "Delete" button is clicked
         builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "Deleted!", Toast.LENGTH_SHORT).show();
+                Call<ResponseBody> call = moduleClient.deleteModule(token, id);
+
+                //Show progress
+                mProgressDialog.setMessage("Deleting...");
+                mProgressDialog.show();
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        //Successfully added
+                        if (response.code()==200) {
+                            Toast.makeText(context, "Successfully deleted!", Toast.LENGTH_SHORT).show();
+
+                            //Reload module list
+                            ManageModulesActivity activity = (ManageModulesActivity) context;
+                            activity.getAllModules();
+
+                        }
+                        else {
+                            try {
+
+                                // Capture an display specific messages
+                                JSONObject obj = new JSONObject(response.errorBody().string());
+                                Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                            }catch(Exception e) {
+                                Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        mProgressDialog.dismiss();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         });
 
