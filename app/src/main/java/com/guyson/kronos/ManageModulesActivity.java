@@ -48,6 +48,8 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
     private ModuleAdapter moduleAdapter;
     private SearchView searchView;
 
+    private String token;
+
     private List<Module> modules;
 
     private ModuleClient userClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
@@ -59,6 +61,10 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
 
         //Check if authorization token is valid
         AuthHandler.validate(ManageModulesActivity.this, "admin");
+
+        //Retrieve JWT Token
+        SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
+        token = "Bearer "+sharedPreferences.getString("auth_token", null);
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -110,7 +116,7 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
     }
 
     private void getAllLecturers() {
-        Call<List<Module>> call = userClient.getModules();
+        Call<List<Module>> call = userClient.getModules(token);
 
         //Show progress
         mProgressDialog.setMessage("Loading modules...");

@@ -56,7 +56,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> im
             this.rooms = rooms;
             this.filteredRooms = rooms;
 
-            //Alert a change in items if lectures
+            //Alert a change in items
             notifyItemChanged(0, filteredRooms.size());
         }
         //If updating items (previously not null)

@@ -61,7 +61,7 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
             this.lecturers = lecturers;
             this.filteredLecturers = lecturers;
 
-            //Alert a change in items if lectures
+            //Alert a change in items
             notifyItemChanged(0, filteredLecturers.size());
 
         }

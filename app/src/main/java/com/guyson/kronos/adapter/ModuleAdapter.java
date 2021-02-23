@@ -42,8 +42,12 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
         if(this.modules == null){
             this.modules = modules;
             this.filteredModules = modules;
+
+            //Alert change in items
             notifyItemChanged(0, filteredModules.size());
-        } else {
+        }
+        //If updating items (previously not null)
+        else {
             final DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {

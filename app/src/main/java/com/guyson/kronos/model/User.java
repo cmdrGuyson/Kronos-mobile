@@ -5,6 +5,8 @@ public class User {
     private String username, firstName, lastName, password, role, token;
     private int classID;
 
+    public User() {}
+
     public String getLastName() {
         return lastName;
     }

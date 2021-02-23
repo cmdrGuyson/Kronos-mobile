@@ -1,5 +1,6 @@
 package com.guyson.kronos.adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -18,30 +19,51 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.guyson.kronos.ManageLecturersActivity;
+import com.guyson.kronos.ManageStudentsActivity;
 import com.guyson.kronos.R;
 import com.guyson.kronos.model.User;
+import com.guyson.kronos.service.RetrofitClientInstance;
+import com.guyson.kronos.service.UserClient;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHolder> implements Filterable {
 
     private Context context;
     private List<User> students;
     private List<User> filteredStudents;
+    private String token;
+    private ProgressDialog mProgressDialog;
 
-    public StudentAdapter(Context context, List<User> students) {
+    private UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+
+    public StudentAdapter(Context context, List<User> students, String token, ProgressDialog mProgressDialog) {
         this.context = context;
         this.students = students;
+        this.token = token;
+        this.mProgressDialog = mProgressDialog;
     }
 
     public void setStudents(final List<User> students){
         if(this.students == null){
             this.students = students;
             this.filteredStudents = students;
+
+            //Alert a change in items
             notifyItemChanged(0, filteredStudents.size());
-        } else {
+        }
+        //If updating items (previously not null)
+        else {
             final DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {
@@ -146,7 +168,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         }
     }
 
-    private void deleteStudent(String username) {
+    private void deleteStudent(final String username) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle("Delete student");
         builder.setMessage("Are you sure that you want delete "+username+" ?");
@@ -156,7 +178,45 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "Deleted!", Toast.LENGTH_SHORT).show();
+                Call<ResponseBody> call = userClient.deleteStudent(token, username);
+
+                //Show progress
+                mProgressDialog.setMessage("Deleting...");
+                mProgressDialog.show();
+
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                        //Successfully added
+                        if (response.code()==200) {
+                            Toast.makeText(context, "Successfully deleted!", Toast.LENGTH_SHORT).show();
+
+                            //Reload student list
+                            ManageStudentsActivity activity = (ManageStudentsActivity) context;
+                            activity.getAllStudents();
+
+                        }
+                        else {
+                            try {
+
+                                // Capture an display specific messages
+                                JSONObject obj = new JSONObject(response.errorBody().string());
+                                Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                            }catch(Exception e) {
+                                Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        mProgressDialog.dismiss();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 

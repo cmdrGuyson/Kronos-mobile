@@ -59,7 +59,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ViewHolder> 
         if(this.classes == null){
             this.classes = classes;
             this.filteredClasses = classes;
-            //Alert a change in items if lectures
+            //Alert a change in items
             notifyItemChanged(0, filteredClasses.size());
         }
         //If updating items (previously not null)

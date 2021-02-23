@@ -49,6 +49,8 @@ public class ManageStudentsActivity extends AppCompatActivity  implements Naviga
 
     private List<User> students;
 
+    private String token;
+
     private UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
 
     @Override
@@ -58,6 +60,10 @@ public class ManageStudentsActivity extends AppCompatActivity  implements Naviga
 
         //Check if authorization token is valid
         AuthHandler.validate(ManageStudentsActivity.this, "admin");
+
+        //Retrieve JWT Token
+        SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
+        token = "Bearer "+sharedPreferences.getString("auth_token", null);
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -86,7 +92,7 @@ public class ManageStudentsActivity extends AppCompatActivity  implements Naviga
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        studentAdapter = new StudentAdapter(this, students);
+        studentAdapter = new StudentAdapter(this, students, token, mProgressDialog);
         recyclerView.setAdapter(studentAdapter);
 
         getAllStudents();
@@ -108,8 +114,8 @@ public class ManageStudentsActivity extends AppCompatActivity  implements Naviga
 
     }
 
-    private void getAllStudents() {
-        Call<List<User>> call = userClient.getStudents();
+    public void getAllStudents() {
+        Call<List<User>> call = userClient.getStudents(token);
 
         //Show progress
         mProgressDialog.setMessage("Loading students...");
@@ -164,6 +170,12 @@ public class ManageStudentsActivity extends AppCompatActivity  implements Naviga
         int id = item.getItemId();
         if (id == R.id.action_search) {
             return true;
+        }else if (id == R.id.add) {
+
+            //Direct to AddClassActivity
+            Intent intent = new Intent(ManageStudentsActivity.this, AddStudentActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
