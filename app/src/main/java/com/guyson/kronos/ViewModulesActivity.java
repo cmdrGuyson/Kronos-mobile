@@ -93,7 +93,7 @@ public class ViewModulesActivity extends AppCompatActivity  implements Navigatio
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        moduleAdapter = new ModuleAdapter(this, modules, "student");
+        moduleAdapter = new ModuleAdapter(this, modules, "student", token, mProgressDialog);
         recyclerView.setAdapter(moduleAdapter);
 
         getAllModules();

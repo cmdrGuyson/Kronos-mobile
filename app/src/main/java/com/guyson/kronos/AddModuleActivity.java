@@ -189,7 +189,7 @@ public class AddModuleActivity extends AppCompatActivity implements NavigationVi
             try {
                 credits = Integer.parseInt(creditsEditText.getText().toString());
             }catch(Exception e) {
-                Toast.makeText(AddModuleActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Invalid credit amount!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -255,8 +255,7 @@ public class AddModuleActivity extends AppCompatActivity implements NavigationVi
             }
 
         }else{
-            Toast.makeText(AddModuleActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-            mProgressDialog.dismiss();
+            Toast.makeText(this, "Form wasn't setup properly!", Toast.LENGTH_SHORT).show();
         }
 
     }

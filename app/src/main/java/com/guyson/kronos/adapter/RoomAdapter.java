@@ -188,7 +188,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.ViewHolder> im
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        //Successfully added
+                        //Successfully deleted
                         if (response.code()==200) {
                             Toast.makeText(context, "Successfully deleted!", Toast.LENGTH_SHORT).show();
 

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -237,6 +238,12 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
         int id = item.getItemId();
         if (id == R.id.action_search) {
             return true;
+        }else if (id == R.id.add) {
+
+            //Direct to AddClassActivity
+            Intent intent = new Intent(ManageLecturesActivity.this, AddLectureActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

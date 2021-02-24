@@ -3,6 +3,7 @@ package com.guyson.kronos.adapter;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +15,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.guyson.kronos.ManageLecturersActivity;
 import com.guyson.kronos.ManageModulesActivity;
+import com.guyson.kronos.MyModulesActivity;
 import com.guyson.kronos.R;
 import com.guyson.kronos.model.Module;
 import com.guyson.kronos.service.ModuleClient;
@@ -48,12 +48,6 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
     private ProgressDialog mProgressDialog;
 
     private ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
-
-    public ModuleAdapter(Context context, List<Module> modules, String role) {
-        this.context = context;
-        this.modules = modules;
-        this.role = role;
-    }
 
     public ModuleAdapter(Context context, List<Module> modules, String role, String token, ProgressDialog mProgressDialog) {
         this.context = context;
@@ -122,7 +116,9 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ModuleAdapter.ViewHolder holder, final int position) {
-        holder.mNameID.setText("["+filteredModules.get(position).getModuleID() + "] " + filteredModules.get(position).getName());
+        final int moduleID = filteredModules.get(position).getModuleID();
+
+        holder.mNameID.setText("["+moduleID + "] " + filteredModules.get(position).getName());
         holder.mDescription.setText((filteredModules.get(position)).getDescription());
         holder.mCredits.setText("CREDITS " + filteredModules.get(position).getCredits());
         holder.mLecturer.setText(filteredModules.get(position).getLecturer().getFirstName() +" "+ filteredModules.get(position).getLecturer().getLastName());
@@ -146,7 +142,7 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
                 holder.mEnrollButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context, "Enrolled!", Toast.LENGTH_SHORT).show();
+                        handleEnroll(moduleID);
                     }
                 });
             }else{
@@ -156,11 +152,97 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
                 holder.mEnrollButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(context, "Unrolled!", Toast.LENGTH_SHORT).show();
+                        handleUnroll(moduleID);
                     }
                 });
             }
         }
+    }
+
+    //Enroll student in module
+    private void handleEnroll(int id) {
+
+        Call<ResponseBody> call = moduleClient.enroll(token, id);
+
+        //Show progress
+        mProgressDialog.setMessage("Enrolling...");
+        mProgressDialog.show();
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                //Successfully enrolled
+                if (response.code()==200) {
+                    Toast.makeText(context, "Successfully enrolled!", Toast.LENGTH_SHORT).show();
+
+                    //Direct to my modules
+                    Intent intent = new Intent(context, MyModulesActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    context.startActivity(intent);
+
+                }
+                else {
+                    try {
+
+                        // Capture an display specific messages
+                        JSONObject obj = new JSONObject(response.errorBody().string());
+                        Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                    }catch(Exception e) {
+                        Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //Unroll student from module
+    private void handleUnroll(int id) {
+
+        Call<ResponseBody> call = moduleClient.unroll(token, id);
+
+        //Show progress
+        mProgressDialog.setMessage("Unrolling...");
+        mProgressDialog.show();
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                //Successfully unrolled
+                if (response.code()==200) {
+                    Toast.makeText(context, "Successfully unrolled!", Toast.LENGTH_SHORT).show();
+
+                    //Direct to my modules
+                    Intent intent = new Intent(context, MyModulesActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    context.startActivity(intent);
+
+                }
+                else {
+                    try {
+
+                        // Capture an display specific messages
+                        JSONObject obj = new JSONObject(response.errorBody().string());
+                        Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                    }catch(Exception e) {
+                        Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -241,7 +323,7 @@ public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ViewHolder
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        //Successfully added
+                        //Successfully deleted
                         if (response.code()==200) {
                             Toast.makeText(context, "Successfully deleted!", Toast.LENGTH_SHORT).show();
 

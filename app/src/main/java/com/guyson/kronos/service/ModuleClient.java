@@ -36,10 +36,10 @@ public interface ModuleClient {
     Call<ResponseBody> deleteModule(@Header("Authorization") String token, @Path("id") int id);
 
     //Enroll in module
-    @POST("enroll/{id}")
+    @GET("enroll/{id}")
     Call<ResponseBody> enroll(@Header("Authorization") String token, @Path("id") int id);
 
     //Unroll from module
-    @POST("unroll/{id}")
+    @GET("unroll/{id}")
     Call<ResponseBody> unroll(@Header("Authorization") String token, @Path("id") int id);
 }

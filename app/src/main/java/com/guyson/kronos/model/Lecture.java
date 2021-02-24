@@ -3,6 +3,8 @@ package com.guyson.kronos.model;
 public class Lecture {
 
     private int lectureID;
+    private int roomID;
+    private int moduleID;
     private Module module;
     private Room room;
     private String date, startTime;
@@ -15,6 +17,24 @@ public class Lecture {
         this.date = date;
         this.startTime = startTime;
         this.duration = duration;
+    }
+
+    public Lecture() {}
+
+    public int getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(int roomID) {
+        this.roomID = roomID;
+    }
+
+    public int getModuleID() {
+        return moduleID;
+    }
+
+    public void setModuleID(int moduleID) {
+        this.moduleID = moduleID;
     }
 
     public int getLectureID() {

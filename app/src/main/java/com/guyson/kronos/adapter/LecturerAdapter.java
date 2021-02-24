@@ -198,7 +198,7 @@ public class LecturerAdapter extends RecyclerView.Adapter<LecturerAdapter.ViewHo
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        //Successfully added
+                        //Successfully deleted
                         if (response.code()==200) {
                             Toast.makeText(context, "Successfully deleted!", Toast.LENGTH_SHORT).show();
 
