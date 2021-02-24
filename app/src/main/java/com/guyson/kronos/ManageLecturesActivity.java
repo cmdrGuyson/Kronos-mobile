@@ -59,6 +59,7 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
     private List<Lecture> lectures;
     private boolean resultsRetrieved;
     private String token;
+    private CalendarDay selectedDate;
 
     private LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
 
@@ -106,22 +107,24 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        lectureAdapter = new LectureAdapter(this, lectures, "admin");
+        lectureAdapter = new LectureAdapter(this, lectures, "admin", token, mProgressDialog);
         recyclerView.setAdapter(lectureAdapter);
 
         //When a date is selected
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                dateChangeHandler(date);
+                selectedDate = date;
+                dateChangeHandler();
             }
         });
 
         materialCalendarView.setDateSelected(CalendarDay.today(), true);
-        dateChangeHandler(CalendarDay.today());
+        selectedDate = CalendarDay.today();
+        dateChangeHandler();
     }
 
-    private void getAllLectures() {
+    public void getAllLectures() {
         Call<List<Lecture>> call = lectureClient.getAllLectures(token);
 
         //Show progress
@@ -153,13 +156,14 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupTimetable() {
         if(resultsRetrieved) {
+            materialCalendarView.removeDecorators();
             materialCalendarView.addDecorators(new EventDecorator(Color.RED, ExtraUtilities.getCalendarDays(lectures)));
         }
     }
 
-    private void dateChangeHandler(CalendarDay date) {
+    public void dateChangeHandler() {
 
-        Call<List<Lecture>> call = lectureClient.getAllLecturesByDate(token, ExtraUtilities.getStringDate(date));
+        Call<List<Lecture>> call = lectureClient.getAllLecturesByDate(token, ExtraUtilities.getStringDate(selectedDate));
 
         //Show progress
         mProgressDialog.setMessage("Loading lectures...");

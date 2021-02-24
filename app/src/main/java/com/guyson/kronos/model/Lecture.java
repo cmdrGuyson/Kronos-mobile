@@ -1,6 +1,8 @@
 package com.guyson.kronos.model;
 
-public class Lecture {
+import java.io.Serializable;
+
+public class Lecture implements Serializable {
 
     private int lectureID;
     private int roomID;

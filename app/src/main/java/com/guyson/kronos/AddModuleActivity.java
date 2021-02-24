@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.guyson.kronos.model.Lecture;
 import com.guyson.kronos.model.Lecturer;
 import com.guyson.kronos.model.Module;
 import com.guyson.kronos.model.User;
@@ -144,7 +145,7 @@ public class AddModuleActivity extends AppCompatActivity implements NavigationVi
             @Override
             public void onResponse(Call<List<Lecturer>> call, Response<List<Lecturer>> response) {
                 List<Lecturer> lecturerList = response.body();
-                if(lecturerList!=null){
+                if(lecturerList!=null) {
 
                     //Configure drop down
                     for (Lecturer l : lecturerList) {

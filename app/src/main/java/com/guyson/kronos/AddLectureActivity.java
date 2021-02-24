@@ -77,6 +77,9 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
 
     private String date, time;
 
+    private boolean updateFlag;
+    private Lecture lecture_obj;
+
     //Dropdown attributes
     private List<String> modules = new ArrayList<>();
     private List<Integer> module_ids = new ArrayList<>();
@@ -158,6 +161,28 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
                 handleSubmit();
             }
         });
+
+        //If UPDATING already created lecture
+        try {
+
+            lecture_obj = (Lecture) getIntent().getSerializableExtra("lecture_obj");
+
+            if (lecture_obj != null) {
+                updateFlag = true;
+
+                date = lecture_obj.getDate();
+                time = lecture_obj.getStartTime();
+                dateEditText.setText(lecture_obj.getDate());
+                timeEditText.setText(lecture_obj.getStartTime());
+                durationEditText.setText(String.valueOf(lecture_obj.getDuration()));
+                timeSelected = true;
+                dateSelected = true;
+                button.setText("Update Lecture");
+
+            }
+
+        }catch(Exception ignored){}
+
     }
 
     //Method to handle date picker
@@ -238,7 +263,7 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
 
                     //Configure drop down
                     for (Module m : moduleList) {
-                        modules.add(m.getName() + m.getModuleID());
+                        modules.add(m.getName() + " " + m.getModuleID());
                         module_ids.add(m.getModuleID());
                     }
 
@@ -250,6 +275,11 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
 
                     moduleDropdown.setAdapter(adapter);
                     modulesLoaded = true;
+
+                    //If updating lecture set existing module
+                    if(updateFlag) {
+                        moduleDropdown.setText(modules.get(module_ids.indexOf(lecture_obj.getModule().getModuleID())));
+                    }
 
                     //If both modules and rooms are loaded dismiss loading dialog
                     if (roomsLoaded) mProgressDialog.dismiss();
@@ -292,6 +322,11 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
 
                     roomDropdown.setAdapter(adapter);
                     roomsLoaded = true;
+
+                    //If updating lecture set existing room
+                    if(updateFlag) {
+                        roomDropdown.setText(rooms.get(room_ids.indexOf(lecture_obj.getRoom().getRoomID())));
+                    }
 
                     //If both modules and rooms are loaded dismiss loading dialog
                     if (modulesLoaded) mProgressDialog.dismiss();
@@ -345,6 +380,9 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
 
                 //Show progress
                 mProgressDialog.setMessage("Adding lecture...");
+
+                if(updateFlag) mProgressDialog.setMessage("Updating lecture...");
+
                 mProgressDialog.show();
 
                 //Create lecture object
@@ -357,12 +395,23 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
 
                 Call<ResponseBody> call = lectureClient.addLecture(token, lecture);
 
+                //If updating existing lecture
+                if(updateFlag) {
+                    call = lectureClient.updateLecture(token, lecture_obj.getLectureID(), lecture);
+                    lecture.setLectureID(lecture_obj.getLectureID());
+                }
+
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         //Successfully added
                         if (response.code() == 201) {
-                            Toast.makeText(AddLectureActivity.this, "Successfully added lecture!", Toast.LENGTH_SHORT).show();
+
+                            if(updateFlag){
+                                Toast.makeText(AddLectureActivity.this, "Successfully updated lecture!", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(AddLectureActivity.this, "Successfully added lecture!", Toast.LENGTH_SHORT).show();
+                            }
 
                             mProgressDialog.dismiss();
 

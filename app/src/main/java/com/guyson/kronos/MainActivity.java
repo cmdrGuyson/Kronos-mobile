@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        lectureAdapter = new LectureAdapter(this, lectures, "student");
+        lectureAdapter = new LectureAdapter(this, lectures, "student", token, mProgressDialog);
         recyclerView.setAdapter(lectureAdapter);
 
         //When a date is selected

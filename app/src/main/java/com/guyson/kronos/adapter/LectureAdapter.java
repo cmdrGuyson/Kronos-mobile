@@ -1,7 +1,9 @@
 package com.guyson.kronos.adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,11 +21,24 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.guyson.kronos.AddLectureActivity;
+import com.guyson.kronos.ManageClassesActivity;
+import com.guyson.kronos.ManageLecturesActivity;
 import com.guyson.kronos.R;
 import com.guyson.kronos.model.Lecture;
+import com.guyson.kronos.service.LectureClient;
+import com.guyson.kronos.service.RetrofitClientInstance;
 
+import org.json.JSONObject;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHolder> implements Filterable {
 
@@ -31,11 +46,17 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     private List<Lecture> lectures;
     private List<Lecture> filteredLectures;
     private String role;
+    private String token;
+    private ProgressDialog mProgressDialog;
 
-    public LectureAdapter(Context context, List<Lecture> lectures, String role) {
+    private LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
+
+    public LectureAdapter(Context context, List<Lecture> lectures, String role, String token, ProgressDialog mProgressDialog) {
         this.context = context;
         this.lectures = lectures;
         this.role = role;
+        this.token = token;
+        this.mProgressDialog = mProgressDialog;
     }
 
     public void setLectures(final List<Lecture> lectures){
@@ -99,7 +120,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    deleteLecture(filteredLectures.get(position).getLectureID());
+                    deleteLecture(filteredLectures.get(position));
                     return false;
                 }
             });
@@ -159,29 +180,91 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
         }
     }
 
-    private void deleteLecture(int lectureID) {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle("Delete Lecture");
-        builder.setMessage("Are you sure that you want lecture "+lectureID+" ?");
+    private void deleteLecture(final Lecture lecture) {
 
-        //When "Delete" button is clicked
-        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
+        MaterialAlertDialogBuilder option_builder = new MaterialAlertDialogBuilder(context);
+        option_builder.setTitle("Please select option");
+        option_builder.setSingleChoiceItems(new CharSequence[] {"Update", "Delete"}, 0, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "Deleted!", Toast.LENGTH_SHORT).show();
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //change selected category
+                dialogInterface.dismiss();
+
+                //Update lecture
+                if(i==0) {
+
+                    //Direct to Add Lecture activity with Lecture object to Update
+                    Intent intent = new Intent(context, AddLectureActivity.class);
+                    intent.putExtra("lecture_obj", (Serializable) lecture);
+                    context.startActivity(intent);
+
+                }
+                //Delete Lecture
+                else {
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+                    builder.setTitle("Delete Lecture");
+                    builder.setMessage("Are you sure that you want lecture "+lecture.getLectureID()+" ?");
+
+                    //When "Delete" button is clicked
+                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.O)
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Call<ResponseBody> call = lectureClient.deleteLecture(token, lecture.getLectureID());
+
+                            //Show progress
+                            mProgressDialog.setMessage("Deleting...");
+                            mProgressDialog.show();
+
+                            call.enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                                    //Successfully deleted
+                                    if (response.code()==200) {
+                                        Toast.makeText(context, "Successfully deleted!", Toast.LENGTH_SHORT).show();
+
+                                        //Reload lecture list
+                                        ManageLecturesActivity activity = (ManageLecturesActivity) context;
+                                        activity.dateChangeHandler();
+                                        activity.getAllLectures();
+
+                                    }
+                                    else {
+                                        try {
+
+                                            // Capture an display specific messages
+                                            JSONObject obj = new JSONObject(response.errorBody().string());
+                                            Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                                        }catch(Exception e) {
+                                            Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                    mProgressDialog.dismiss();
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+
+                    //When cancel button is clicked
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
+                }
             }
         });
-
-        //When cancel button is clicked
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
+        option_builder.show();
     }
 }
 

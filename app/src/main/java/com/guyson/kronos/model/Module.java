@@ -1,6 +1,8 @@
 package com.guyson.kronos.model;
 
-public class Module {
+import java.io.Serializable;
+
+public class Module implements Serializable {
     private int moduleID;
     private int credits;
 
