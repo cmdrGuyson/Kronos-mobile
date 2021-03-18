@@ -53,8 +53,8 @@ public class AddModuleActivity extends AppCompatActivity implements NavigationVi
     private EditText nameEditText, descriptionEditText, creditsEditText;
     private AutoCompleteTextView lecturerDropdown;
 
-    private LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
-    private ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
+    private final LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
+    private final ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
 
     private String token;
     private boolean dataLoaded;

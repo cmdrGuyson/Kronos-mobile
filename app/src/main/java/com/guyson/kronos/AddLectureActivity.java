@@ -67,9 +67,9 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
     private EditText dateEditText, timeEditText, durationEditText;
     private AutoCompleteTextView moduleDropdown, roomDropdown;
 
-    private ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
-    private RoomClient roomClient = RetrofitClientInstance.getRetrofitInstance().create(RoomClient.class);
-    private LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
+    private final ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
+    private final RoomClient roomClient = RetrofitClientInstance.getRetrofitInstance().create(RoomClient.class);
+    private final LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
 
     private String token;
     private boolean modulesLoaded, roomsLoaded;

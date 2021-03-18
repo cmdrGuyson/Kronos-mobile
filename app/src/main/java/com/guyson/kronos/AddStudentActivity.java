@@ -52,8 +52,8 @@ public class AddStudentActivity extends AppCompatActivity implements NavigationV
     private EditText firstNameEditText, lastNameEditText, usernameEditText;
     private AutoCompleteTextView classDropdown;
 
-    private UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
-    private ClassClient classClient = RetrofitClientInstance.getRetrofitInstance().create(ClassClient.class);
+    private final UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+    private final ClassClient classClient = RetrofitClientInstance.getRetrofitInstance().create(ClassClient.class);
 
     private String token;
     private boolean dataLoaded;

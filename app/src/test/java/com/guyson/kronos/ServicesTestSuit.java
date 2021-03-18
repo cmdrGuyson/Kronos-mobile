@@ -31,20 +31,20 @@ import static org.junit.Assert.assertTrue;
 
 public class ServicesTestSuit {
 
-    private String token;
+    private final String ADMIN_USERNAME = "ADMIN001";
+    private final String ADMIN_PASSWORD = "password";
+    private final String STUDENT_USERNAME = "CB6964";
+    private final String STUDENT_PASSWORD = "CB6964";
 
     @Test
     public void testLoginStudent() {
         UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
-        LoginCredentials loginCredentials = new LoginCredentials("TEST_STUDENT", "password");
+        LoginCredentials loginCredentials = new LoginCredentials(STUDENT_USERNAME, STUDENT_PASSWORD);
         Call<User> call = userClient.login(loginCredentials);
 
         try {
             Response<User> response = call.execute();
             User user = response.body();
-
-            //Set JWT token
-            token = user.getToken();
 
             assertTrue("Login as Student",response.isSuccessful() && user.getRole().equals("student"));
 
@@ -56,9 +56,46 @@ public class ServicesTestSuit {
     }
 
     @Test
+    public void testLoginWithInvalidUsername() {
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials("std", STUDENT_PASSWORD);
+        Call<User> call = userClient.login(loginCredentials);
+
+        try {
+            Response<User> response = call.execute();
+
+            assertTrue("Login with Invalid Username", response.code() == 403);
+
+            System.out.println("Login with Invalid Username:\tPASSED");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testLoginWithInvalidPassword() {
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials(STUDENT_USERNAME, "pass");
+        Call<User> call = userClient.login(loginCredentials);
+
+        try {
+            Response<User> response = call.execute();
+
+            assertTrue("Login with Invalid Password", response.code() == 403);
+
+            System.out.println("Login with Invalid Password:\tPASSED");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void testLoginAdmin() {
         UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
-        LoginCredentials loginCredentials = new LoginCredentials("TEST_ADMIN", "password");
+        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
         Call<User> call = userClient.login(loginCredentials);
 
         try {
@@ -77,13 +114,23 @@ public class ServicesTestSuit {
     @Test
     public void testGetLecturers() {
         LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
-        Call<List<Lecturer>> call = lecturerClient.getLecturers(token);
+
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        Call<User> login_call = userClient.login(loginCredentials);
 
         try {
+
+            Response<User> login_response = login_call.execute();
+            String token = login_response.body().getToken();
+
+            Call<List<Lecturer>> call = lecturerClient.getLecturers(token);
+
             Response<List<Lecturer>> response = call.execute();
             List<Lecturer> lecturers = response.body();
 
-            assertTrue("Get All Lecturers",response.isSuccessful() && lecturers.size()==2);
+            assertTrue("Get All Lecturers",response.isSuccessful());
 
             System.out.println("Get All Lecturers:\tPASSED");
 
@@ -95,13 +142,23 @@ public class ServicesTestSuit {
     @Test
     public void testGetClasses() {
         ClassClient classClient = RetrofitClientInstance.getRetrofitInstance().create(ClassClient.class);
-        Call<List<Class>> call = classClient.getClasses(token);
+
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        Call<User> login_call = userClient.login(loginCredentials);
 
         try {
+
+            Response<User> login_response = login_call.execute();
+            String token = login_response.body().getToken();
+
+            Call<List<Class>> call = classClient.getClasses(token);
+
             Response<List<Class>> response = call.execute();
             List<Class> classes = response.body();
 
-            assertTrue("Get All Classes",response.isSuccessful() && classes.size()==2);
+            assertTrue("Get All Classes",response.isSuccessful());
 
             System.out.println("Get All Classes:\tPASSED");
 
@@ -113,13 +170,24 @@ public class ServicesTestSuit {
     @Test
     public void testGetLectures() {
         LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
-        Call<List<Lecture>> call = lectureClient.getAllLectures(token);
+
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        Call<User> login_call = userClient.login(loginCredentials);
+
 
         try {
+
+            Response<User> login_response = login_call.execute();
+            String token = login_response.body().getToken();
+
+            Call<List<Lecture>> call = lectureClient.getAllLectures(token);
+
             Response<List<Lecture>> response = call.execute();
             List<Lecture> lectures = response.body();
 
-            assertTrue("Get All Lectures",response.isSuccessful() && lectures.size()==4);
+            assertTrue("Get All Lectures",response.isSuccessful());
 
             System.out.println("Get All Lectures:\tPASSED");
 
@@ -130,14 +198,23 @@ public class ServicesTestSuit {
 
     @Test
     public void testGetModules() {
-        ModuleClient userClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
-        Call<List<Module>> call = userClient.getModules();
+        ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
+
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        Call<User> login_call = userClient.login(loginCredentials);
 
         try {
+            Response<User> login_response = login_call.execute();
+            String token = login_response.body().getToken();
+
+            Call<List<Module>> call = moduleClient.getModules(token);
+
             Response<List<Module>> response = call.execute();
             List<Module> modules = response.body();
 
-            assertTrue("Get All Modules",response.isSuccessful() && modules.size()==2);
+            assertTrue("Get All Modules",response.isSuccessful());
 
             System.out.println("Get All Modules:\tPASSED");
 
@@ -147,15 +224,79 @@ public class ServicesTestSuit {
     }
 
     @Test
-    public void testGetRooms() {
-        RoomClient roomClient = RetrofitClientInstance.getRetrofitInstance().create(RoomClient.class);
-        Call<List<Room>> call = roomClient.getRooms();
+    public void testGetStudentModules() {
+        ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
+
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials(STUDENT_USERNAME, STUDENT_PASSWORD);
+
+        Call<User> login_call = userClient.login(loginCredentials);
 
         try {
+            Response<User> login_response = login_call.execute();
+            String token = login_response.body().getToken();
+
+            Call<List<Module>> call = moduleClient.getStudentModules(token);
+
+            Response<List<Module>> response = call.execute();
+            List<Module> modules = response.body();
+
+            assertTrue("Get Student Modules",response.isSuccessful());
+
+            System.out.println("Get Student Modules:\tPASSED");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testGetMyModules() {
+        ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
+
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials(STUDENT_USERNAME, STUDENT_PASSWORD);
+
+        Call<User> login_call = userClient.login(loginCredentials);
+
+        try {
+            Response<User> login_response = login_call.execute();
+            String token = login_response.body().getToken();
+
+            Call<List<Module>> call = moduleClient.getMyModules(token);
+
+            Response<List<Module>> response = call.execute();
+            List<Module> modules = response.body();
+
+            assertTrue("Get My Modules",response.isSuccessful());
+
+            System.out.println("Get My Modules:\tPASSED");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testGetRooms() {
+        RoomClient roomClient = RetrofitClientInstance.getRetrofitInstance().create(RoomClient.class);
+
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        Call<User> login_call = userClient.login(loginCredentials);
+
+        try {
+
+            Response<User> login_response = login_call.execute();
+            String token = login_response.body().getToken();
+
+            Call<List<Room>> call = roomClient.getRooms(token);
+
             Response<List<Room>> response = call.execute();
             List<Room> rooms = response.body();
 
-            assertTrue("Get All Rooms",response.isSuccessful() && rooms.size()==2);
+            assertTrue("Get All Rooms",response.isSuccessful());
 
             System.out.println("Get All Rooms:\t\tPASSED");
 
@@ -167,13 +308,21 @@ public class ServicesTestSuit {
     @Test
     public void testGetStudents() {
         UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
-        Call<List<User>> call = userClient.getStudents();
+        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        Call<User> login_call = userClient.login(loginCredentials);
 
         try {
+
+            Response<User> login_response = login_call.execute();
+            String token = login_response.body().getToken();
+
+            Call<List<User>> call = userClient.getStudents(token);
+
             Response<List<User>> response = call.execute();
             List<User> students = response.body();
 
-            assertTrue("Get All Students",response.isSuccessful() && students.size()==3);
+            assertTrue("Get All Students",response.isSuccessful());
 
             System.out.println("Get All Students:\tPASSED");
 
@@ -181,4 +330,6 @@ public class ServicesTestSuit {
             e.printStackTrace();
         }
     }
+
+
 }

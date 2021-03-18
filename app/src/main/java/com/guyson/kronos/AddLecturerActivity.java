@@ -54,7 +54,7 @@ public class AddLecturerActivity extends AppCompatActivity implements Navigation
     private String token;
 
     //Lecturer Retrofit Client
-    LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
+    private final LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
 
     //Dropdown attributes
     private List<String> types = new ArrayList<>();

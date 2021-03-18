@@ -54,7 +54,7 @@ public class AddRoomActivity extends AppCompatActivity implements NavigationView
     private String token;
 
     //Retrofit class client
-    RoomClient roomClient = RetrofitClientInstance.getRetrofitInstance().create(RoomClient.class);
+    private final RoomClient roomClient = RetrofitClientInstance.getRetrofitInstance().create(RoomClient.class);
 
     //Dropdown attributes
     private List<String> types = new ArrayList<>();

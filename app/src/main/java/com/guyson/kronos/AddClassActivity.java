@@ -52,7 +52,7 @@ public class AddClassActivity extends AppCompatActivity implements NavigationVie
     private String token;
 
     //Retrofit class client
-    ClassClient classClient = RetrofitClientInstance.getRetrofitInstance().create(ClassClient.class);
+    private final ClassClient classClient = RetrofitClientInstance.getRetrofitInstance().create(ClassClient.class);
 
     //Dropdown attributes
     private List<String> types = new ArrayList<>();
