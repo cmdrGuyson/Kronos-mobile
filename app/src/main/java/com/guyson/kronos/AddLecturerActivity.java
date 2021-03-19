@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.guyson.kronos.enums.LecturerType;
 import com.guyson.kronos.model.Lecture;
 import com.guyson.kronos.model.Lecturer;
 import com.guyson.kronos.model.MessageResponse;
@@ -99,8 +100,9 @@ public class AddLecturerActivity extends AppCompatActivity implements Navigation
         emailEditText = findViewById(R.id.input_email);
 
         //Setup dropdown
-        types.add("Visiting");
-        types.add("Permanent");
+        for (LecturerType lecturerType : LecturerType.values()) {
+            types.add(lecturerType.getType());
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                         this,

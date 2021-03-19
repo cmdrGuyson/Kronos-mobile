@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.guyson.kronos.enums.ClassType;
 import com.guyson.kronos.model.Class;
 import com.guyson.kronos.service.ClassClient;
 import com.guyson.kronos.service.RetrofitClientInstance;
@@ -95,10 +96,9 @@ public class AddClassActivity extends AppCompatActivity implements NavigationVie
         descriptionEditText = findViewById(R.id.input_description);
 
         //Setup dropdown
-        types.add("Computer Science");
-        types.add("Software Engineering");
-        types.add("Business Management");
-        types.add("Law");
+        for (ClassType classType : ClassType.values()) {
+            types.add(classType.getType());
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,

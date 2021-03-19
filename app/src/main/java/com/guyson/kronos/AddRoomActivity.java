@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.guyson.kronos.enums.RoomType;
 import com.guyson.kronos.model.Class;
 import com.guyson.kronos.model.Room;
 import com.guyson.kronos.service.ClassClient;
@@ -95,9 +96,9 @@ public class AddRoomActivity extends AppCompatActivity implements NavigationView
         descriptionEditText = findViewById(R.id.input_description);
 
         //Setup dropdown
-        types.add("Laboratory");
-        types.add("Hall");
-        types.add("Classroom");
+        for (RoomType roomType: RoomType.values()) {
+            types.add(roomType.getType());
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
