@@ -174,9 +174,7 @@ public class AddClassActivity extends AppCompatActivity implements NavigationVie
                         startActivity(intent);
                     }
                     else {
-
                         try {
-
                             // Capture an display specific messages
                             JSONObject obj = new JSONObject(response.errorBody().string());
                             Toast.makeText(AddClassActivity.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
@@ -184,7 +182,6 @@ public class AddClassActivity extends AppCompatActivity implements NavigationVie
                         }catch(Exception e) {
                             Toast.makeText(AddClassActivity.this, "An error occurred", Toast.LENGTH_SHORT).show();
                         }
-
                         mProgressDialog.dismiss();
                     }
                 }

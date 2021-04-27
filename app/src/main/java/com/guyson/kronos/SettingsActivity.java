@@ -125,7 +125,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
         //Show progress
         mProgressDialog.setMessage("Changing password...");
-        mProgressDialog.show();
+
 
         //Get user input
         String oldPassword = oldPasswordEditText.getText().toString();
@@ -144,6 +144,8 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
             ChangePasswordRequest request = new ChangePasswordRequest(oldPassword, newPassword);
 
             Call<ResponseBody> call = userClient.changePassword(token, request);
+
+            mProgressDialog.show();
 
             call.enqueue(new Callback<ResponseBody>() {
                 @Override

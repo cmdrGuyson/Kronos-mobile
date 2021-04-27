@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<User> call, Throwable t) {
                     mProgressDialog.dismiss();
-                    Toast.makeText(LoginActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Invalid username or password!", Toast.LENGTH_SHORT).show();
                 }
             });
 

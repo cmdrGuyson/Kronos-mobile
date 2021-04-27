@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.navigation.NavigationView;
@@ -178,6 +179,7 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
                 timeSelected = true;
                 dateSelected = true;
                 button.setText("Update Lecture");
+                mToolbar.setTitle("Update Lecture");
 
             }
 

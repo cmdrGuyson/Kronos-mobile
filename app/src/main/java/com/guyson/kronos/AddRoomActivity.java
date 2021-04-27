@@ -150,7 +150,7 @@ public class AddRoomActivity extends AppCompatActivity implements NavigationView
             //If user input is valid
 
             //Show progress
-            mProgressDialog.setMessage("Adding class...");
+            mProgressDialog.setMessage("Adding room...");
             mProgressDialog.show();
 
             Room room = new Room();

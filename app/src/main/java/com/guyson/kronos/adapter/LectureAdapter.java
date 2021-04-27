@@ -145,7 +145,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
                     List<Lecture> filteredList = new ArrayList<>();
                     for (Lecture lecture : lectures) {
                         String searchKey = charString.toLowerCase();
-                        if (String.valueOf(lecture.getLectureID()).toLowerCase().contains(searchKey) || lecture.getModule().getLecturer().getLastName().toLowerCase().contains(searchKey) || lecture.getModule().getLecturer().getFirstName().toLowerCase().contains(searchKey)) {
+                        if (lecture.getModule().getName().toLowerCase().contains(searchKey)||String.valueOf(lecture.getLectureID()).toLowerCase().contains(searchKey) || lecture.getModule().getLecturer().getLastName().toLowerCase().contains(searchKey) || lecture.getModule().getLecturer().getFirstName().toLowerCase().contains(searchKey)) {
                             filteredList.add(lecture);
                         }
                     }
