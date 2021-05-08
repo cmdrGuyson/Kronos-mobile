@@ -151,8 +151,12 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-            }else if(role.equals("admin")){
+            }else if(role.equals("academic_admin")){
                 Intent intent = new Intent(LoginActivity.this, ManageLecturersActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }else if(role.equals("admin")){
+                Intent intent = new Intent(LoginActivity.this, ManageStudentsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

@@ -33,6 +33,8 @@ public class ServicesTestSuit {
 
     private final String ADMIN_USERNAME = "ADMIN001";
     private final String ADMIN_PASSWORD = "password";
+    private final String ACADEMIC_ADMIN_USERNAME = "ADMIN002";
+    private final String ACADEMIC_ADMIN_PASSWORD = "password";
     private final String STUDENT_USERNAME = "CB6964";
     private final String STUDENT_PASSWORD = "CB6964";
 
@@ -116,7 +118,7 @@ public class ServicesTestSuit {
         LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
 
         UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
-        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
+        LoginCredentials loginCredentials = new LoginCredentials(ACADEMIC_ADMIN_USERNAME, ACADEMIC_ADMIN_PASSWORD);
 
         Call<User> login_call = userClient.login(loginCredentials);
 
@@ -172,7 +174,7 @@ public class ServicesTestSuit {
         LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
 
         UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
-        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
+        LoginCredentials loginCredentials = new LoginCredentials(ACADEMIC_ADMIN_USERNAME, ACADEMIC_ADMIN_PASSWORD);
 
         Call<User> login_call = userClient.login(loginCredentials);
 
@@ -201,7 +203,7 @@ public class ServicesTestSuit {
         ModuleClient moduleClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
 
         UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
-        LoginCredentials loginCredentials = new LoginCredentials(ADMIN_USERNAME, ADMIN_PASSWORD);
+        LoginCredentials loginCredentials = new LoginCredentials(ACADEMIC_ADMIN_USERNAME, ACADEMIC_ADMIN_PASSWORD);
 
         Call<User> login_call = userClient.login(loginCredentials);
 

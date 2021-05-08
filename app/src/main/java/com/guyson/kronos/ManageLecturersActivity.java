@@ -61,7 +61,7 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
         setContentView(R.layout.activity_manage_lecturers);
 
         //Check if authorization token is valid
-        AuthHandler.validate(ManageLecturersActivity.this, "admin");
+        AuthHandler.validate(ManageLecturersActivity.this, "academic_admin");
 
         //Retrieve JWT Token
         SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
@@ -104,7 +104,7 @@ public class ManageLecturersActivity extends AppCompatActivity  implements Navig
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         //Handle side drawer navigation
-        NavHandler.handleAdminNav(item, ManageLecturersActivity.this);
+        NavHandler.handleAcademicAdminNav(item, ManageLecturersActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);

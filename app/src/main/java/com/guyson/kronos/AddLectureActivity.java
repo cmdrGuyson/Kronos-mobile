@@ -94,7 +94,7 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
         setContentView(R.layout.activity_add_lecture);
 
         //Check if authorization token is valid
-        AuthHandler.validate(AddLectureActivity.this, "admin");
+        AuthHandler.validate(AddLectureActivity.this, "academic_admin");
 
         //Retrieve JWT Token
         SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
@@ -242,7 +242,7 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         //Handle side drawer navigation
-        NavHandler.handleAdminNav(item, AddLectureActivity.this);
+        NavHandler.handleAcademicAdminNav(item, AddLectureActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);

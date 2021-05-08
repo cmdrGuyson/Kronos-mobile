@@ -69,7 +69,7 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
         setContentView(R.layout.activity_manage_lectures);
 
         //Check if authorization token is valid
-        AuthHandler.validate(ManageLecturesActivity.this, "admin");
+        AuthHandler.validate(ManageLecturesActivity.this, "academic_admin");
 
         //Retrieve JWT Token
         SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
@@ -137,6 +137,7 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
             public void onResponse(Call<List<Lecture>> call, Response<List<Lecture>> response) {
                 lectures = response.body();
                 if (lectures != null) {
+                    //Toast.makeText(ManageLecturesActivity.this, "size: "+lectures.size(), Toast.LENGTH_SHORT).show();
                     resultsRetrieved = true;
                     setupTimetable();
                 }else{
@@ -201,7 +202,7 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //Handle side drawer navigation
-        NavHandler.handleAdminNav(item, ManageLecturesActivity.this);
+        NavHandler.handleAcademicAdminNav(item, ManageLecturesActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -257,6 +258,6 @@ public class ManageLecturesActivity extends AppCompatActivity implements Navigat
     protected void onResume() {
         super.onResume();
         //Check if authorization token is valid
-        AuthHandler.validate(ManageLecturesActivity.this, "admin");
+        AuthHandler.validate(ManageLecturesActivity.this, "academic_admin");
     }
 }

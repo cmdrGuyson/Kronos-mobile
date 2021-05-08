@@ -9,7 +9,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -68,7 +67,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
 
         mNavigationView.getMenu().clear();
         if(role.equals("admin")){
-            mNavigationView.inflateMenu(R.menu.nav_menu_admin);
+            mNavigationView.inflateMenu(R.menu.nav_menu_academic_admin);
         }else{
             mNavigationView.inflateMenu(R.menu.nav_menu);
         }

@@ -60,7 +60,7 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
         setContentView(R.layout.activity_manage_modules);
 
         //Check if authorization token is valid
-        AuthHandler.validate(ManageModulesActivity.this, "admin");
+        AuthHandler.validate(ManageModulesActivity.this, "academic_admin");
 
         //Retrieve JWT Token
         SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
@@ -103,7 +103,7 @@ public class ManageModulesActivity extends AppCompatActivity  implements Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         //Handle side drawer navigation
-        NavHandler.handleAdminNav(item, ManageModulesActivity.this);
+        NavHandler.handleAcademicAdminNav(item, ManageModulesActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);

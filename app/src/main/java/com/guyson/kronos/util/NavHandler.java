@@ -33,13 +33,6 @@ public class NavHandler {
                 context.startActivity(intent);
                 break;
             }
-            case R.id.nav_manage_lecturers: {
-                //Manage Lecturers button
-                Intent intent = new Intent(context, ManageLecturersActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                context.startActivity(intent);
-                break;
-            }
             case R.id.nav_manage_rooms: {
                 //Manage Lecturers button
                 Intent intent = new Intent(context, ManageRoomsActivity.class);
@@ -50,6 +43,32 @@ public class NavHandler {
             case R.id.nav_manage_students: {
                 //Manage Students button
                 Intent intent = new Intent(context, ManageStudentsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+                break;
+            }
+            case R.id.nav_settings: {
+                //Settings button
+                Intent intent = new Intent(context, SettingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+                break;
+            }
+
+        }
+    }
+
+    public static void handleAcademicAdminNav(MenuItem item, Context context) {
+        switch (item.getItemId()) {
+
+            case R.id.nav_logout: {
+                //Logout button
+                AuthHandler.logout(context);
+                break;
+            }
+            case R.id.nav_manage_lecturers: {
+                //Manage Lecturers button
+                Intent intent = new Intent(context, ManageLecturersActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
                 break;
@@ -71,6 +90,7 @@ public class NavHandler {
                 Intent intent = new Intent(context, ManageLecturesActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
+                break;
             }
 
         }
