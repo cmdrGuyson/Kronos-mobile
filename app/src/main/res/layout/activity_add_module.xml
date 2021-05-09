@@ -32,7 +32,7 @@
             android:id="@+id/otf_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Module Name"
+            android:hint="@string/module_name"
             android:layout_marginTop="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -50,7 +50,7 @@
             android:id="@+id/otf_credits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Credit Amount"
+            android:hint="@string/credit_amount"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -69,7 +69,7 @@
             android:id="@+id/otf_lecturer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Lecturer"
+            android:hint="@string/lecturer"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -86,7 +86,7 @@
             android:id="@+id/otf_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description"
+            android:hint="@string/description"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -109,7 +109,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginRight="32dp"
             android:id="@+id/add_button"
-            android:text="Add Module" />
+            android:text="@string/add_module" />
 
     </RelativeLayout>
 

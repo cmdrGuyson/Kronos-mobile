@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
-            android:text="Change Password"
+            android:text="@string/change_password"
             android:layout_centerInParent="true"
             android:layout_below="@id/coordinator_layout"
             android:id="@+id/title_tv" />
@@ -41,7 +41,7 @@
             android:id="@+id/otf_password_old"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Old Password"
+            android:hint="@string/old_password"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -60,7 +60,7 @@
             android:id="@+id/otf_password_new"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="New Password"
+            android:hint="@string/new_password"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -79,7 +79,7 @@
             android:id="@+id/otf_password_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Confirm Password"
+            android:hint="@string/confirm_password"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -103,7 +103,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginRight="32dp"
             android:id="@+id/change_button"
-            android:text="Change Password" />
+            android:text="@string/change_password" />
 
 
     </RelativeLayout>

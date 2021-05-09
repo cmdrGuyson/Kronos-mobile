@@ -116,8 +116,10 @@ public class LoginActivity extends AppCompatActivity {
 
                         if(role.equals("student")){
                             homePageIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        }else {
+                        }else if(role.equals("academic_admin")) {
                             homePageIntent = new Intent(LoginActivity.this, ManageLecturersActivity.class);
+                        }else{
+                            homePageIntent = new Intent(LoginActivity.this, ManageStudentsActivity.class);
                         }
                         homePageIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(homePageIntent);

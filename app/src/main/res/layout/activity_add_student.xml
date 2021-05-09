@@ -32,7 +32,7 @@
             android:id="@+id/otf_first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="First Name"
+            android:hint="@string/first_name"
             android:layout_marginTop="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -50,7 +50,7 @@
             android:id="@+id/otf_last_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Last Name"
+            android:hint="@string/last_name"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -68,7 +68,7 @@
             android:id="@+id/otf_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username"
+            android:hint="@string/username"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -86,7 +86,7 @@
             android:id="@+id/otf_class"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Class"
+            android:hint="@string/_class"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -108,7 +108,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginRight="32dp"
             android:id="@+id/add_button"
-            android:text="Add Student" />
+            android:text="@string/add_student" />
 
     </RelativeLayout>
 

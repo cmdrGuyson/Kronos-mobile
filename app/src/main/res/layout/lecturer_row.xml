@@ -57,7 +57,7 @@
                 android:layout_below="@id/_id"
                 android:layout_marginLeft="15dp"
                 android:padding="5dp"
-                android:text="Name"
+                android:text="@string/name"
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
@@ -69,7 +69,7 @@
                 android:layout_marginRight="30dp"
                 android:gravity="right"
                 android:padding="5dp"
-                android:text="Saman Gamage"
+                android:text="@string/saman_gamage"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
 
@@ -80,7 +80,7 @@
                 android:layout_below="@id/_name"
                 android:layout_marginLeft="15dp"
                 android:padding="5dp"
-                android:text="Email"
+                android:text="@string/email"
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
@@ -92,7 +92,7 @@
                 android:layout_marginRight="30dp"
                 android:gravity="right"
                 android:padding="5dp"
-                android:text="saman@email.com"
+                android:text="@string/saman_email_com"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
 
@@ -103,7 +103,7 @@
                 android:layout_below="@id/_email"
                 android:layout_marginLeft="15dp"
                 android:padding="5dp"
-                android:text="Type"
+                android:text="@string/type"
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
@@ -115,7 +115,7 @@
                 android:layout_marginRight="30dp"
                 android:gravity="right"
                 android:padding="5dp"
-                android:text="VISITING"
+                android:text="@string/visiting"
                 android:textColor="@color/colorPrimary"/>
 
             <!--        <Button-->

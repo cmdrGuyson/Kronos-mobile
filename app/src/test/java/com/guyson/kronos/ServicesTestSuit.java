@@ -71,7 +71,7 @@ public class ServicesTestSuit {
             System.out.println("Login with Invalid Username:\tPASSED");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -89,7 +89,7 @@ public class ServicesTestSuit {
             System.out.println("Login with Invalid Password:\tPASSED");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
     }

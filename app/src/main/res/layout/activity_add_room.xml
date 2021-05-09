@@ -32,7 +32,7 @@
             android:id="@+id/otf_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Type"
+            android:hint="@string/type"
             android:layout_marginTop="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -49,7 +49,7 @@
             android:id="@+id/otf_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description"
+            android:hint="@string/description"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -72,7 +72,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginRight="32dp"
             android:id="@+id/add_button"
-            android:text="Add Room" />
+            android:text="@string/add_room" />
 
     </RelativeLayout>
 

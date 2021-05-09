@@ -32,7 +32,7 @@
             android:id="@+id/otf_module"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Module"
+            android:hint="@string/module"
             android:layout_marginTop="32dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -49,7 +49,7 @@
             android:id="@+id/otf_room"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Room"
+            android:hint="@string/room"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -66,7 +66,7 @@
             android:id="@+id/otf_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Date"
+            android:hint="@string/date"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -85,7 +85,7 @@
             android:id="@+id/otf_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Start Time"
+            android:hint="@string/start_time"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -104,7 +104,7 @@
             android:id="@+id/otf_duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Duration (Hours)"
+            android:hint="@string/duration_hours"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
@@ -128,7 +128,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginRight="32dp"
             android:id="@+id/add_button"
-            android:text="Add Lecture" />
+            android:text="@string/add_lecture" />
 
     </RelativeLayout>
 
