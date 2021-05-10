@@ -107,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedPrefs.edit();
                         editor.putString("auth_token", response.body().getToken());
                         editor.putString("role", response.body().getRole());
+                        editor.putString("username", response.body().getUsername());
                         editor.apply();
 
                         //Direct user to respective home page

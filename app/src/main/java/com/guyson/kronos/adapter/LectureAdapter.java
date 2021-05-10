@@ -2,6 +2,7 @@ package com.guyson.kronos.adapter;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -10,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -37,6 +39,7 @@ import com.guyson.kronos.MainActivity;
 import com.guyson.kronos.ManageLecturesActivity;
 import com.guyson.kronos.R;
 import com.guyson.kronos.model.Lecture;
+import com.guyson.kronos.provider.BookmarksContentProvider;
 import com.guyson.kronos.service.LectureClient;
 import com.guyson.kronos.service.RetrofitClientInstance;
 
@@ -63,6 +66,8 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     private List<Lecture> filteredLectures;
     private String role;
     private String token;
+
+    private String username;
     private ProgressDialog mProgressDialog;
 
     private final int MY_PERMISSIONS_REQUEST_WRITE_CALENDAR = 1;
@@ -77,6 +82,10 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
         this.role = role;
         this.token = token;
         this.mProgressDialog = mProgressDialog;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setLectures(final List<Lecture> lectures){
@@ -315,10 +324,41 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
                 }
                 //Add to bookmarks
                 else {
+                    addToBookmarks(lecture);
                 }
             }
         });
         option_builder.show();
+    }
+
+    private void addToBookmarks(Lecture lecture) {
+        // class to add values in the database
+        ContentValues values = new ContentValues();
+
+        // Create values
+        values.put(BookmarksContentProvider.DATE, lecture.getDate());
+        values.put(BookmarksContentProvider.DURATION, lecture.getDuration());
+        values.put(BookmarksContentProvider.OWNER, username);
+        values.put(BookmarksContentProvider.PRIORITY, "normal");
+        values.put(BookmarksContentProvider.START_TIME, lecture.getStartTime());
+        values.put(BookmarksContentProvider.LECTURE_ID, lecture.getLectureID());
+        values.put(BookmarksContentProvider.ROOM_ID, lecture.getRoomID());
+        values.put(BookmarksContentProvider.MODULE, lecture.getModule().getName());
+        values.put(BookmarksContentProvider.LECTURER, lecture.getModule().getLecturer().getFirstName() + " " + lecture.getModule().getLecturer().getLastName());
+
+
+        try {
+
+            // inserting into database through content URI
+            context.getContentResolver().insert(BookmarksContentProvider.CONTENT_URI, values);
+
+        }catch(SQLiteException ex){
+            Toast.makeText(context, "Already bookmarked!", Toast.LENGTH_LONG).show();
+        }
+
+
+        // displaying a toast message
+        Toast.makeText(context, "Added to bookmarks!", Toast.LENGTH_LONG).show();
     }
 
     private void addLectureToCalendar(Lecture lecture) throws ParseException {
@@ -376,6 +416,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             long eventID = Long.parseLong(uri.getLastPathSegment());
             Log.i("Calendar", "Event Created, ID: " + eventID);
             Toast.makeText(context, "Calendar event added!", Toast.LENGTH_SHORT).show();
+
         } else {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_CALENDAR}, MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
         }

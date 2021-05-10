@@ -55,4 +55,10 @@
     <string name="_1_fcm">[1] FCM</string>
     <string name="student_id">Student ID</string>
     <string name="lc001">LC001</string>
+    <string name="lecturer_name">Lecturer Name</string>
+    <string name="_11_09_2021">11-09-2021</string>
+    <string name="room_1">Room-1</string>
+    <string name="software_engineering">Software Engineering</string>
+    <string name="_08_30_2_hours">08:30 (2 hours)</string>
+    <string name="time_and_duration">Time and Duration</string>
 </resources>

@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private List<Lecture> lectures;
     private boolean resultsRetrieved;
     private String token;
+    private String username;
 
     private LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
 
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Retrieve JWT Token
         SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
         token = "Bearer "+sharedPreferences.getString("auth_token", null);
+        username = sharedPreferences.getString("username", null);
 
         //Setup toolbar
         mToolbar = findViewById(R.id.toolbar);
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         lectureAdapter = new LectureAdapter(this, lectures, "student", token, mProgressDialog);
+        lectureAdapter.setUsername(username);
         recyclerView.setAdapter(lectureAdapter);
 
         //When a date is selected
@@ -227,9 +230,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         // super.onBackPressed();
         // Not calling **super**, disables back button in current screen.
-    }
-
-    public void getPermissions() {
-
     }
 }

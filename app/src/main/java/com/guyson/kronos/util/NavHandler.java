@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.MenuItem;
 
+import com.guyson.kronos.BookmarkedActivity;
 import com.guyson.kronos.MainActivity;
 import com.guyson.kronos.ManageClassesActivity;
 import com.guyson.kronos.ManageLecturersActivity;
@@ -128,6 +129,13 @@ public class NavHandler {
             case R.id.nav_my_modules: {
                 //My Modules Button
                 Intent intent = new Intent(context, MyModulesActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+                break;
+            }
+            case R.id.nav_bookmarks: {
+                //Bookmarks button
+                Intent intent = new Intent(context, BookmarkedActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
                 break;

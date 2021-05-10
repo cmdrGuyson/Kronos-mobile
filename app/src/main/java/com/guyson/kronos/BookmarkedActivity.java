@@ -14,19 +14,22 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.auth0.android.jwt.JWT;
 import com.google.android.material.navigation.NavigationView;
-import com.guyson.kronos.adapter.LecturerAdapter;
-import com.guyson.kronos.adapter.ModuleAdapter;
-import com.guyson.kronos.model.Module;
+import com.guyson.kronos.adapter.BookmarkAdapter;
+import com.guyson.kronos.adapter.ClassAdapter;
+import com.guyson.kronos.model.Bookmark;
+import com.guyson.kronos.model.Class;
+import com.guyson.kronos.model.Lecture;
+import com.guyson.kronos.service.ClassClient;
 import com.guyson.kronos.service.RetrofitClientInstance;
-import com.guyson.kronos.service.ModuleClient;
 import com.guyson.kronos.util.AuthHandler;
 import com.guyson.kronos.util.NavHandler;
 
@@ -37,7 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyModulesActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
+public class BookmarkedActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
@@ -45,25 +48,24 @@ public class MyModulesActivity extends AppCompatActivity  implements NavigationV
     private ProgressDialog mProgressDialog;
 
     private RecyclerView recyclerView;
-    private ModuleAdapter moduleAdapter;
     private SearchView searchView;
+    private BookmarkAdapter bookmarkAdapter;
 
-    private List<Module> modules;
-    private String token;
+    private List<Bookmark> bookmarks;
 
-    private ModuleClient userClient = RetrofitClientInstance.getRetrofitInstance().create(ModuleClient.class);
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_modules);
+        setContentView(R.layout.activity_bookmarked);
 
         //Check if authorization token is valid
-        AuthHandler.validate(MyModulesActivity.this, "student");
+        AuthHandler.validate(BookmarkedActivity.this, "student");
 
-        //Retrieve JWT Token
+        //Retrieve username
         SharedPreferences sharedPreferences = getSharedPreferences("auth_preferences", Context.MODE_PRIVATE);
-        token = "Bearer "+sharedPreferences.getString("auth_token", null);
+        username = sharedPreferences.getString("username", null);
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -87,22 +89,21 @@ public class MyModulesActivity extends AppCompatActivity  implements NavigationV
         mActionBarDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        //Setup modules list
-        modules = new ArrayList<>();
+        //Setup classes list
+        bookmarks = new ArrayList<>();
         recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        moduleAdapter = new ModuleAdapter(this, modules, "student", token, mProgressDialog);
-        recyclerView.setAdapter(moduleAdapter);
+        bookmarkAdapter = new BookmarkAdapter(this, bookmarks, mProgressDialog);
+        recyclerView.setAdapter(bookmarkAdapter);
 
-        getAllModules();
+        getAllBookmarks();
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         //Handle side drawer navigation
-        NavHandler.handleStudentNav(item, MyModulesActivity.this);
+        NavHandler.handleStudentNav(item, BookmarkedActivity.this);
 
         //close navigation drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -114,32 +115,38 @@ public class MyModulesActivity extends AppCompatActivity  implements NavigationV
 
     }
 
-    private void getAllModules() {
-        Call<List<Module>> call = userClient.getMyModules(token);
-
+    private void getAllBookmarks() {
         //Show progress
-        mProgressDialog.setMessage("Loading modules...");
+        mProgressDialog.setMessage("Loading bookmarks...");
         mProgressDialog.show();
 
-        call.enqueue(new Callback<List<Module>>() {
-            @Override
-            public void onResponse(Call<List<Module>> call, Response<List<Module>> response) {
-                modules = response.body();
-                if(modules!=null){
-                    moduleAdapter.setModules(modules);
-                    if(modules.size()==0) Toast.makeText(MyModulesActivity.this, "You have no enrollments!", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(MyModulesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-                }
-                mProgressDialog.dismiss();
-            }
+        Cursor cursor = getContentResolver().query(Uri.parse("content://com.guyson.kronos.provider/bookmarks"), null, null, null, null);
 
-            @Override
-            public void onFailure(Call<List<Module>> call, Throwable t) {
-                Toast.makeText(MyModulesActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
-                mProgressDialog.dismiss();
+        // iteration of the cursor
+        // to print whole table
+        if(cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                if(cursor.getString(cursor.getColumnIndex("owner")).equals(username)) {
+                    Bookmark bookmark = new Bookmark();
+                    bookmark.setLectureID(cursor.getInt(cursor.getColumnIndex("lectureID")));
+                    bookmark.setRoomID(cursor.getInt(cursor.getColumnIndex("roomID")));
+                    bookmark.setDuration(cursor.getInt(cursor.getColumnIndex("duration")));
+                    bookmark.setDate(cursor.getString(cursor.getColumnIndex("date")));
+                    bookmark.setStartTime(cursor.getString(cursor.getColumnIndex("startTime")));
+                    bookmark.setPriority(cursor.getString(cursor.getColumnIndex("priority")));
+                    bookmark.setModule(cursor.getString(cursor.getColumnIndex("module")));
+                    bookmarks.add(bookmark);
+                }
+                cursor.moveToNext();
             }
-        });
+            bookmarkAdapter.setBookmarks(bookmarks);
+        }
+        else {
+            Toast.makeText(this, "You have no bookmarks!", Toast.LENGTH_SHORT).show();
+        }
+
+        if (bookmarks.size()==0) Toast.makeText(this, "You have no bookmarks!", Toast.LENGTH_SHORT).show();
+        mProgressDialog.dismiss();
     }
 
     @Override
@@ -154,18 +161,19 @@ public class MyModulesActivity extends AppCompatActivity  implements NavigationV
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                moduleAdapter.getFilter().filter(query);
+                bookmarkAdapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
-                moduleAdapter.getFilter().filter(query);
+                bookmarkAdapter.getFilter().filter(query);
                 return false;
             }
         });
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

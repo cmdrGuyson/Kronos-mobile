@@ -15,7 +15,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="${usesCleartextTraffic}">
-        <activity android:name=".AddLectureActivity"></activity>
+        <provider
+            android:name=".provider.BookmarksContentProvider"
+            android:authorities="com.guyson.kronos.provider"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <activity android:name=".BookmarkedActivity" />
+        <activity android:name=".AddLectureActivity" />
         <activity android:name=".AddModuleActivity" />
         <activity android:name=".AddStudentActivity" />
         <activity android:name=".AddRoomActivity" />
