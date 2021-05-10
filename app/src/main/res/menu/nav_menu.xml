@@ -5,6 +5,7 @@
             <item android:title="@string/view_timetable" android:icon="@drawable/ic_baseline_assignment_24" android:id="@+id/nav_timetable"/>
             <item android:title="@string/my_modules" android:icon="@drawable/ic_baseline_assignment_ind_24" android:id="@+id/nav_my_modules"/>
             <item android:title="@string/enroll_in_module" android:icon="@drawable/ic_baseline_add_box_24" android:id="@+id/nav_enroll"/>
+            <item android:title="Bookmarked Lectures" android:icon="@drawable/ic_baseline_bookmarks_24" android:id="@+id/nav_bookmarks" />
         </menu>
     </item>
     <item android:title="ACCOUNT">

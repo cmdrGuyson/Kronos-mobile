@@ -1,10 +1,19 @@
 package com.guyson.kronos.adapter;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +26,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.guyson.kronos.AddLectureActivity;
-import com.guyson.kronos.ManageClassesActivity;
+import com.guyson.kronos.MainActivity;
 import com.guyson.kronos.ManageLecturesActivity;
 import com.guyson.kronos.R;
 import com.guyson.kronos.model.Lecture;
@@ -32,8 +43,13 @@ import com.guyson.kronos.service.RetrofitClientInstance;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -49,7 +65,11 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
     private String token;
     private ProgressDialog mProgressDialog;
 
+    private final int MY_PERMISSIONS_REQUEST_WRITE_CALENDAR = 1;
+
     private LectureClient lectureClient = RetrofitClientInstance.getRetrofitInstance().create(LectureClient.class);
+
+    private SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
 
     public LectureAdapter(Context context, List<Lecture> lectures, String role, String token, ProgressDialog mProgressDialog) {
         this.context = context;
@@ -121,6 +141,14 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
                 @Override
                 public boolean onLongClick(View view) {
                     deleteLecture(filteredLectures.get(position));
+                    return false;
+                }
+            });
+        }else{
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    handleStudentOnHold(filteredLectures.get(position));
                     return false;
                 }
             });
@@ -265,6 +293,122 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             }
         });
         option_builder.show();
+    }
+
+    private void handleStudentOnHold(final Lecture lecture) {
+
+        MaterialAlertDialogBuilder option_builder = new MaterialAlertDialogBuilder(context);
+        option_builder.setTitle("Please select option");
+        option_builder.setSingleChoiceItems(new CharSequence[] {"Add to calendar", "Add to bookmarks"}, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //change selected category
+                dialogInterface.dismiss();
+
+                //Add to calendar
+                if(i==0) {
+                    try {
+                        addLectureToCalendar(lecture);
+                    } catch (ParseException e) {
+                        Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                //Add to bookmarks
+                else {
+                }
+            }
+        });
+        option_builder.show();
+    }
+
+    private void addLectureToCalendar(Lecture lecture) throws ParseException {
+
+        MainActivity activity = (MainActivity) context;
+
+        //Request permissions
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, "Please give calendar write permissions!", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_CALENDAR}, MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+            return;
+        }
+        //Request permissions
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, "Please give calendar read permissions!", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_CALENDAR}, MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+            return;
+        }
+
+        long startMillis = 0;
+        long endMillis = 0;
+
+        //Get start time in milliseconds
+        Calendar start = Calendar.getInstance();
+        start.setTime(Objects.requireNonNull(DATE_TIME_FORMATTER.parse(lecture.getDate() + " " + lecture.getStartTime())));
+        startMillis = start.getTimeInMillis();
+
+        //Get end time in milliseconds
+        endMillis = startMillis + (lecture.getDuration()*60*60*1000);
+
+        //Name of the event
+        String eventTitle = lecture.getModule().getName()+" Lecture"+"-"+lecture.getLectureID();
+
+        if (doesEventExist(startMillis, endMillis, eventTitle)) {
+            Toast.makeText(context, "Calendar event already exists!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        /** Add event to calendar **/
+
+        long calID = 3;
+
+        //Get content resolver and add setup calendar contract
+        ContentResolver cr = context.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.DTSTART, startMillis);
+        values.put(CalendarContract.Events.DTEND, endMillis);
+        values.put(CalendarContract.Events.TITLE, eventTitle);
+        values.put(CalendarContract.Events.DESCRIPTION, "Kronos system. Lecture event");
+        values.put(CalendarContract.Events.CALENDAR_ID, calID);
+        values.put(CalendarContract.Events.EVENT_TIMEZONE, "Asia/Colombo");
+        values.put(CalendarContract.Events.EVENT_COLOR, Color.RED);
+
+        Log.i("Calendar", "Attempting to add");
+
+        //Add calendar event
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+            long eventID = Long.parseLong(uri.getLastPathSegment());
+            Log.i("Calendar", "Event Created, ID: " + eventID);
+            Toast.makeText(context, "Calendar event added!", Toast.LENGTH_SHORT).show();
+        } else {
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_CALENDAR}, MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+        }
+
+    }
+
+    //Method to check if calendar event already exists
+    private boolean doesEventExist(long startMillis, long endMillis, String eventTitle) {
+        final String[] INSTANCE_PROJECTION = new String[] {
+                CalendarContract.Instances.EVENT_ID,      // 0
+                CalendarContract.Instances.BEGIN,         // 1
+                CalendarContract.Instances.TITLE          // 2
+        };
+
+        // The ID of the event whose instances searched for in the Instances table
+        String selection = CalendarContract.Instances.TITLE + " = ?";
+        String[] selectionArgs = new String[] {eventTitle};
+
+        // Construct the query with the desired date range.
+        Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
+        ContentUris.appendId(builder, startMillis);
+        ContentUris.appendId(builder, endMillis);
+
+        // Submit the query
+        Cursor cur =  context.getContentResolver().query(builder.build(), INSTANCE_PROJECTION, selection, selectionArgs, null);
+
+        Log.i("Calendar", "Event exits");
+
+        return cur.getCount() > 0;
     }
 }
 

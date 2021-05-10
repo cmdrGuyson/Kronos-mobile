@@ -228,4 +228,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // super.onBackPressed();
         // Not calling **super**, disables back button in current screen.
     }
+
+    public void getPermissions() {
+
+    }
 }
