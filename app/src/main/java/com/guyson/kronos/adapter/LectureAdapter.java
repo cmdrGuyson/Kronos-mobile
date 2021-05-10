@@ -326,17 +326,13 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
         MainActivity activity = (MainActivity) context;
 
         //Request permissions
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, "Please give calendar write permissions!", Toast.LENGTH_SHORT).show();
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_CALENDAR}, MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
-            return;
-        }
         //Request permissions
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(context, "Please give calendar read permissions!", Toast.LENGTH_SHORT).show();
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_CALENDAR}, MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            //Toast.makeText(context, "Please give calendar read permissions!", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR }, MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
             return;
         }
+
 
         long startMillis = 0;
         long endMillis = 0;
@@ -362,7 +358,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
         long calID = 3;
 
         //Get content resolver and add setup calendar contract
-        ContentResolver cr = context.getContentResolver();
+        ContentResolver resolver = context.getContentResolver();
         ContentValues values = new ContentValues();
         values.put(CalendarContract.Events.DTSTART, startMillis);
         values.put(CalendarContract.Events.DTEND, endMillis);
@@ -376,7 +372,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
 
         //Add calendar event
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+            Uri uri = resolver.insert(CalendarContract.Events.CONTENT_URI, values);
             long eventID = Long.parseLong(uri.getLastPathSegment());
             Log.i("Calendar", "Event Created, ID: " + eventID);
             Toast.makeText(context, "Calendar event added!", Toast.LENGTH_SHORT).show();
