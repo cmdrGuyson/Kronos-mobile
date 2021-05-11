@@ -18,10 +18,10 @@ public class BookmarksContentProvider extends ContentProvider {
     public BookmarksContentProvider() {
     }
     // Authority
-    static final String PROVIDER_NAME = "com.guyson.kronos.provider";
+    private static final String PROVIDER_NAME = "com.guyson.kronos.provider";
 
     // Content URI
-    static final String URL = "content://" + PROVIDER_NAME + "/bookmarks";
+    private static final String URL = "content://" + PROVIDER_NAME + "/bookmarks";
 
     // Constants
     public static final Uri CONTENT_URI = Uri.parse(URL);
@@ -35,8 +35,8 @@ public class BookmarksContentProvider extends ContentProvider {
     public static final String ROOM_ID = "roomID";
     public static final String PRIORITY = "priority";
 
-    static final int uriCode = 1;
-    static final UriMatcher uriMatcher;
+    private static final int uriCode = 1;
+    private static final UriMatcher uriMatcher;
     private static HashMap<String, String> values;
 
     static {

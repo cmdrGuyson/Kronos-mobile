@@ -11,18 +11,6 @@ public class Bookmark {
     private String owner;
     private String priority;
 
-    public Bookmark(String owner, int lectureID, int roomID, String module, String lecturer, String date, String startTime, int duration, String priority) {
-        this.lectureID = lectureID;
-        this.roomID = roomID;
-        this.module = module;
-        this.lecturer = lecturer;
-        this.date = date;
-        this.startTime = startTime;
-        this.duration = duration;
-        this.owner = owner;
-        this.priority = priority;
-    }
-
     public Bookmark() {}
 
     public int getLectureID() {

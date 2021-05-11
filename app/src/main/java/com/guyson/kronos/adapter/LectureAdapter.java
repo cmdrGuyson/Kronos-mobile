@@ -149,7 +149,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    deleteLecture(filteredLectures.get(position));
+                    handleOnHold(filteredLectures.get(position));
                     return false;
                 }
             });
@@ -217,7 +217,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
         }
     }
 
-    private void deleteLecture(final Lecture lecture) {
+    private void handleOnHold(final Lecture lecture) {
 
         MaterialAlertDialogBuilder option_builder = new MaterialAlertDialogBuilder(context);
         option_builder.setTitle("Please select option");

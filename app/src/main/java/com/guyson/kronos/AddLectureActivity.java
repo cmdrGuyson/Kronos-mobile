@@ -166,25 +166,29 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
         //If UPDATING already created lecture
         try {
 
-            lecture_obj = (Lecture) getIntent().getSerializableExtra("lecture_obj");
-
-            if (lecture_obj != null) {
-                updateFlag = true;
-
-                date = lecture_obj.getDate();
-                time = lecture_obj.getStartTime();
-                dateEditText.setText(lecture_obj.getDate());
-                timeEditText.setText(lecture_obj.getStartTime());
-                durationEditText.setText(String.valueOf(lecture_obj.getDuration()));
-                timeSelected = true;
-                dateSelected = true;
-                button.setText("Update Lecture");
-                mToolbar.setTitle("Update Lecture");
-
-            }
+            setPreviousData();
 
         }catch(Exception ignored){}
 
+    }
+
+    private void setPreviousData() {
+        lecture_obj = (Lecture) getIntent().getSerializableExtra("lecture_obj");
+
+        if (lecture_obj != null) {
+            updateFlag = true;
+
+            date = lecture_obj.getDate();
+            time = lecture_obj.getStartTime();
+            dateEditText.setText(lecture_obj.getDate());
+            timeEditText.setText(lecture_obj.getStartTime());
+            durationEditText.setText(String.valueOf(lecture_obj.getDuration()));
+            timeSelected = true;
+            dateSelected = true;
+            button.setText("Update Lecture");
+            mToolbar.setTitle("Update Lecture");
+
+        }
     }
 
     //Method to handle date picker
@@ -407,7 +411,7 @@ public class AddLectureActivity extends AppCompatActivity implements NavigationV
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         //Successfully added
-                        if (response.code() == 201) {
+                        if (response.code() == 201 || response.code() == 200) {
 
                             if(updateFlag){
                                 Toast.makeText(AddLectureActivity.this, "Successfully updated lecture!", Toast.LENGTH_SHORT).show();
