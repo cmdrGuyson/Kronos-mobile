@@ -352,13 +352,12 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.ViewHold
             // inserting into database through content URI
             context.getContentResolver().insert(BookmarksContentProvider.CONTENT_URI, values);
 
+            // displaying a toast message
+            Toast.makeText(context, "Added to bookmarks!", Toast.LENGTH_LONG).show();
+
         }catch(SQLiteException ex){
             Toast.makeText(context, "Already bookmarked!", Toast.LENGTH_LONG).show();
         }
-
-
-        // displaying a toast message
-        Toast.makeText(context, "Added to bookmarks!", Toast.LENGTH_LONG).show();
     }
 
     private void addLectureToCalendar(Lecture lecture) throws ParseException {

@@ -66,8 +66,10 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
         mNavigationView = findViewById(R.id.nav_view);
 
         mNavigationView.getMenu().clear();
-        if(role.equals("admin")){
+        if(role.equals("academic_admin")){
             mNavigationView.inflateMenu(R.menu.nav_menu_academic_admin);
+        }else if(role.equals("admin")){
+            mNavigationView.inflateMenu(R.menu.nav_menu_admin);
         }else{
             mNavigationView.inflateMenu(R.menu.nav_menu);
         }
@@ -102,11 +104,12 @@ public class SettingsActivity extends AppCompatActivity implements NavigationVie
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if(role.equals("admin")){
-
             //Handle side drawer navigation
             NavHandler.handleAdminNav(item, SettingsActivity.this);
-        }else{
+        }else if(role.equals("student")){
             NavHandler.handleStudentNav(item, SettingsActivity.this);
+        }else{
+            NavHandler.handleAcademicAdminNav(item, SettingsActivity.this);
         }
 
         //close navigation drawer

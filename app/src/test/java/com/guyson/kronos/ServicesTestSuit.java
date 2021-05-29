@@ -114,6 +114,25 @@ public class ServicesTestSuit {
     }
 
     @Test
+    public void testLoginAcademicAdmin() {
+        UserClient userClient = RetrofitClientInstance.getRetrofitInstance().create(UserClient.class);
+        LoginCredentials loginCredentials = new LoginCredentials(ACADEMIC_ADMIN_USERNAME, ACADEMIC_ADMIN_PASSWORD);
+        Call<User> call = userClient.login(loginCredentials);
+
+        try {
+            Response<User> response = call.execute();
+            User user = response.body();
+
+            assertTrue("Login as Academic Admin", response.isSuccessful() && user.getRole().equals("academic_admin"));
+
+            System.out.println("Login as Academic Admin:\t\tPASSED");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void testGetLecturers() {
         LecturerClient lecturerClient = RetrofitClientInstance.getRetrofitInstance().create(LecturerClient.class);
 
